@@ -55,9 +55,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GutterService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StatusbarInjector.cs" />
-    <Compile Include="WindowManager.cs" />
+    <Compile Include="ToggleGuttersCommand.cs" />
     <Compile Include="WindowManagerPackage.cs" />
   </ItemGroup>
   <ItemGroup>

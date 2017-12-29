@@ -42,7 +42,7 @@ namespace VSWindowManager
         public const string PackageGuidString = "1cc17f39-7039-467d-a9ad-ede432cb89ea";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WindowManager"/> class.
+        /// Initializes a new instance of the <see cref="ToggleGuttersCommand"/> class.
         /// </summary>
         public WindowManagerPackage()
         {
@@ -60,7 +60,7 @@ namespace VSWindowManager
         /// </summary>
         protected override void Initialize()
         {
-            WindowManager.Initialize(this);
+            ToggleGuttersCommand.Initialize(this);
             base.Initialize();
         }
 
