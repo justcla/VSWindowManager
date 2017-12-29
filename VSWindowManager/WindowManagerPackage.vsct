@@ -7,16 +7,17 @@
   <Commands package="guidWindowManagerPackage">
 
     <Groups>
-      <Group guid="guidWindowManagerPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
       </Group>
     </Groups>
 
     <Buttons>
-      <Button guid="guidWindowManagerPackageCmdSet" id="WindowManagerId" priority="0x0100" type="Button">
-        <Parent guid="guidWindowManagerPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersCmdId" priority="0x0100" type="Button">
+        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
         <Strings>
-          <ButtonText>Invoke WindowManager</ButtonText>
+          <ButtonText>Toggle Gutters</ButtonText>
+          <MenuText>Show/Hide Tool Window &amp;Gutters</MenuText>
         </Strings>
       </Button>
     </Buttons>
@@ -29,8 +30,8 @@
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidWindowManagerPackageCmdSet" value="{04c55c1f-7f7d-482b-bc73-05fed05d9674}">
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="WindowManagerId" value="0x0100" />
+      <IDSymbol name="WindowManagerGroup" value="0x1020" />
+      <IDSymbol name="ToggleGuttersCmdId" value="0x0100" />
     </GuidSymbol>
 
   </Symbols>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Globalization;
+using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -9,7 +10,7 @@ namespace VSWindowManager
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class WindowManager
+    internal sealed class ToggleGuttersCommand
     {
         /// <summary>
         /// Command ID.
@@ -25,13 +26,14 @@ namespace VSWindowManager
         /// VS Package that provides this command, not null.
         /// </summary>
         private readonly Package package;
+        private GutterService _gutterService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WindowManager"/> class.
+        /// Initializes a new instance of the <see cref="ToggleGuttersCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private WindowManager(Package package)
+        private ToggleGuttersCommand(Package package)
         {
             if (package == null)
             {
@@ -47,12 +49,14 @@ namespace VSWindowManager
                 var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
                 commandService.AddCommand(menuItem);
             }
+
+            _gutterService = new GutterService(Application.Current.MainWindow);
         }
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static WindowManager Instance
+        public static ToggleGuttersCommand Instance
         {
             get;
             private set;
@@ -75,7 +79,7 @@ namespace VSWindowManager
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new WindowManager(package);
+            Instance = new ToggleGuttersCommand(package);
         }
 
         /// <summary>
@@ -87,17 +91,7 @@ namespace VSWindowManager
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "WindowManager";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.ServiceProvider,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            _gutterService.ToggleAllSideBars();
         }
     }
 }
