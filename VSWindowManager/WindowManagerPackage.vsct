@@ -6,10 +6,34 @@
 
   <Commands package="guidWindowManagerPackage">
 
+    <Menus>
+      <Menu guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" priority="0x1000" type="Menu">
+        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup"/>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Window Management</ButtonText>
+        </Strings>
+      </Menu>
+    </Menus>
+
     <Groups>
+      <!-- Temporary group for viewing Window Mgmt Popup Menu -->
+      <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup" priority="0x0600">
+        <!-- Temporarily place the Window Mgmt Popup Menu on the View menu - until we can launch it from the status bar -->
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_VIEW"/>
+      </Group>
+      
       <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
       </Group>
+      
+      <Group guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" priority="0x0600">
+        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu"/>
+      </Group>
+      <Group guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" priority="0x0600">
+        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu"/>
+      </Group>
+
     </Groups>
 
     <Buttons>
@@ -24,13 +48,50 @@
 
   </Commands>
 
+  <CommandPlacements>
+    <!-- Temporarily place the Window Mgmt Popup Menu on the View menu - until we can launch it from the status bar --><!--
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" priority="0x0100">
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_VIEW"/>
+    </CommandPlacement>-->
+    
+    <!-- Place items on the Window Management Pop-up Menu -->
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0100">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidSHLMainMenu" id="IDG_VS_WINDOW_LAYOUT" priority="0x0200">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" />
+    </CommandPlacement>
+    
+    <!-- Add items to the Popular Windows group -->
+    <!-- Solution Explorer -->
+    <CommandPlacement guid="guidVSStd97" id="cmdidProjectExplorer" priority="0x0200">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVSStd97" id="cmdidErrorListWindow" priority="0x0200">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" />
+    </CommandPlacement>
+
+    <!-- Add items to the Recent Windows group -->
+    <!-- Solution Explorer -->
+    <CommandPlacement guid="guidVSStd97" id="cmdidErrorListWindow" priority="0x0200">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+
+  </CommandPlacements>
+
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidWindowManagerPackage" value="{1cc17f39-7039-467d-a9ad-ede432cb89ea}" />
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidWindowManagerPackageCmdSet" value="{04c55c1f-7f7d-482b-bc73-05fed05d9674}">
+      <!-- Menus and Groups -->
       <IDSymbol name="WindowManagerGroup" value="0x1020" />
+      <IDSymbol name="WindowManagementPopupMenu" value="0x1030"/>
+      <IDSymbol name="WindowManagementPopupGroup" value="0x1040"/>
+      <IDSymbol name="PopularWindowsGroup" value="0x1050"/>
+      <IDSymbol name="RecentWindowsGroup" value="0x1060"/>
+      <!-- Commands -->
       <IDSymbol name="ToggleGuttersCmdId" value="0x0100" />
     </GuidSymbol>
 
