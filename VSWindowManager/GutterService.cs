@@ -7,7 +7,6 @@ namespace VSWindowManager
     public class GutterService
     {
         private Window _window;
-        private List<DependencyObject> allSideBars;
 
         public GutterService(Window pWindow)
         {
@@ -16,13 +15,28 @@ namespace VSWindowManager
 
         public void ToggleAllSideBars()
         {
-            allSideBars = FindChildrenByType(_window, "AutoHideChannelControl");
-            if (allSideBars == null  || allSideBars.Count == 0) return;
+            // Refresh the side bar list
+            List<FrameworkElement> allSideBars = GetAllSideBars();
 
-            foreach(FrameworkElement sideBar in allSideBars)
+            // If any gutters are visible, they should all be Collapsed
+            bool visibleGutters = allSideBars.Exists(x => x.Visibility == Visibility.Visible);
+
+            // Set the visibility of each side bar
+            allSideBars.ForEach(sideBar => sideBar.Visibility = visibleGutters ? Visibility.Collapsed : Visibility.Visible);
+        }
+
+        private List<FrameworkElement> GetAllSideBars()
+        {
+            var sideBarObjects = FindChildrenByType(_window, "AutoHideChannelControl");
+            if (sideBarObjects == null || sideBarObjects.Count == 0) return null;
+
+            List<FrameworkElement> allSideBars = new List<FrameworkElement>();
+            foreach (DependencyObject sideBarObject in sideBarObjects)
             {
-                sideBar.Visibility = sideBar.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+                allSideBars.Add((FrameworkElement)sideBarObject);
             }
+
+            return allSideBars;
         }
 
         private static List<DependencyObject> FindChildrenByType(DependencyObject parent, string typeName)
