@@ -79,7 +79,6 @@ namespace VSWindowManager
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            MessageBox.Show("Hide Most Recent Tool Window");
             IVsUIShell shell = (IVsUIShell)ServiceProvider.GetService(typeof(IVsUIShell));
             shell.GetToolWindowEnum(out IEnumWindowFrames windowFrames);
             IVsWindowFrame[] windowFrameArray = new IVsWindowFrame[10];
@@ -92,8 +91,8 @@ namespace VSWindowManager
                     windowFrame.IsOnScreen(out int bIsOnScreen);
                     if (bIsOnScreen == 1)
                     {
-                        // Found an active window. Hide it.
-                        windowFrame.Hide();
+                        // Found an active window. AutoHide it.
+                        windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE2.VSFM_AutoHide);
                         break;
                     }
                     //windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out var var1);

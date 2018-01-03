@@ -101,6 +101,10 @@
 
   </CommandPlacements>
 
+  <KeyBindings>
+    <KeyBinding guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinCmdId" editor="guidVSStd97" mod1="Control Shift" key1="VK_F4" />
+  </KeyBindings>
+    
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidWindowManagerPackage" value="{1cc17f39-7039-467d-a9ad-ede432cb89ea}" />
