@@ -4,6 +4,10 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -34,6 +38,7 @@ namespace VSWindowManager
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(WindowManagerPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string)]
     public sealed class WindowManagerPackage : Package
     {
         /// <summary>
@@ -62,6 +67,62 @@ namespace VSWindowManager
         {
             ToggleGuttersCommand.Initialize(this);
             base.Initialize();
+
+            DependencyObject dd = VisualTreeHelper.GetChild(Application.Current.MainWindow, 0);
+            DependencyObject ddd = VisualTreeHelper.GetChild(dd, 0);
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(ddd); i++)
+            {
+                object o = VisualTreeHelper.GetChild(ddd, i);
+                if (o != null && o is DockPanel)
+                {
+                    DockPanel d = o as DockPanel;
+                    if (d.Name == "StatusBarPanel")
+                    {
+                        d.Children.Insert(d.Children.Count - 1, WindowManagementStatusBar);
+                    }
+                }
+            }
+        }
+
+        private StatusBar WindowManagementStatusBar
+        {
+            get
+            {
+                if (_statusBar == null)
+                {
+                    StatusBar sb = new StatusBar() { Width = 100, Background = Brushes.Transparent };
+                    StatusBarItem item = new StatusBarItem() { Width = 100 };
+                    item.Content = new TextBlock() { Text = "Window Management", Background = Brushes.Transparent, Foreground = Brushes.White };
+                    item.MouseUp += Item_MouseUp;
+                    sb.Items.Add(item);
+
+                    _statusBar = sb;
+                }
+
+                return _statusBar;
+            }
+        }
+
+        private StatusBar _statusBar;
+
+        private void Item_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            IVsUIShell shell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
+            if (shell != null)
+            {
+                POINTS[] p = new POINTS[1];
+                p[0] = new POINTS();
+                p[0].x = 0;
+                p[0].y = 0;
+
+                Guid g = new Guid("{04c55c1f-7f7d-482b-bc73-05fed05d9674}");
+                uint id = 0x1030;
+                if (ErrorHandler.Failed(shell.ShowContextMenu(0, ref g, (int)id, p, null)))
+                {
+                    MessageBox.Show("Failed to show context menu");
+                }
+            }
         }
 
         #endregion
