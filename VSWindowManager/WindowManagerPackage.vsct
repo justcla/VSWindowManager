@@ -38,10 +38,15 @@
 
     <Buttons>
       <Button guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersCmdId" priority="0x0100" type="Button">
-        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
         <Strings>
           <ButtonText>Toggle Gutters</ButtonText>
           <MenuText>Show/Hide Tool Window &amp;Gutters</MenuText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinCmdId" priority="0x0100" type="Button">
+        <Strings>
+          <ButtonText>Toggle Gutters</ButtonText>
+          <MenuText>Hide Most &amp;Recently Active Tool Window</MenuText>
         </Strings>
       </Button>
     </Buttons>
@@ -67,6 +72,9 @@
     <CommandPlacement guid="guidVSStd97" id="cmdidProjectExplorer" priority="0x0200">
       <Parent guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" />
     </CommandPlacement>
+    <CommandPlacement guid="guidVSStd97" id="cmdidOutputWindow" priority="0x0200">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" />
+    </CommandPlacement>
     <CommandPlacement guid="guidVSStd97" id="cmdidErrorListWindow" priority="0x0200">
       <Parent guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" />
     </CommandPlacement>
@@ -75,6 +83,20 @@
     <!-- Solution Explorer -->
     <CommandPlacement guid="guidVSStd97" id="cmdidErrorListWindow" priority="0x0200">
       <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+    
+    <!-- Add items to the Windows Manager group -->
+    <CommandPlacement guid="guidVSStd97" id="cmdidFullScreen" priority="0x0110">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVSStd97" id="cmdidAutoHideAllWindows" priority="0x0120">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersCmdId" priority="0x0130">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinCmdId" priority="0x0140">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
     </CommandPlacement>
 
   </CommandPlacements>
@@ -93,6 +115,7 @@
       <IDSymbol name="RecentWindowsGroup" value="0x1060"/>
       <!-- Commands -->
       <IDSymbol name="ToggleGuttersCmdId" value="0x0100" />
+      <IDSymbol name="HideRecentToolWinCmdId" value="0x0110"/>
     </GuidSymbol>
 
   </Symbols>
