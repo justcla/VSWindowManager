@@ -82,23 +82,39 @@ namespace VSWindowManager
             IVsUIShell shell = (IVsUIShell)ServiceProvider.GetService(typeof(IVsUIShell));
             shell.GetToolWindowEnum(out IEnumWindowFrames windowFrames);
             IVsWindowFrame[] windowFrameArray = new IVsWindowFrame[10];
-            while (true)
+            while (windowFrames.Next(10, windowFrameArray, out var fetchedCount) >= 0)  // TODO Check this.
             {
-                windowFrames.Next(10, windowFrameArray, out var fetchedCount);
                 for (int i = 0; i < fetchedCount; i++)
                 {
                     IVsWindowFrame windowFrame = windowFrameArray[i];
+                    windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_ShortCaption, out var caption);
+                    //windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_Type, out var windowType);
+                    //System.Diagnostics.Debug.WriteLine($"Caption: {caption} Type: {windowType}");
+
+                    // Skip over the Start Page. It's a Tool Window - but not really.
+                    if (((string)caption).Equals("Start Page")) {
+                        continue;
+                    }
+
+                    // Only pay attention to visible windows
                     windowFrame.IsOnScreen(out int bIsOnScreen);
                     if (bIsOnScreen == 1)
                     {
                         // Found an active window. AutoHide it.
+                        System.Diagnostics.Debug.WriteLine($"Hiding window: {caption}");
+
+                        // HACK! Internal code for setting FrameMode property will set to Docked if already in AutoHide mode.
+                        // To avoid this, ensure that the window's current FrameMode is not AutoHide. (Set to Dock if necessary.)
+                        windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out var existingAutoHideMode);
+                        if ((int)existingAutoHideMode == (int)VSFRAMEMODE2.VSFM_AutoHide)
+                        {
+                            // Temporarily Dock
+                            windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_Dock);
+                        }
+
                         windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE2.VSFM_AutoHide);
                         break;
                     }
-                    //windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out var var1);
-                    //windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_Type, out var pvar);
-                    //windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_IsWindowTabbed, out var var2);
-                    //System.Diagnostics.Debug.WriteLine($"Caption: {var1} Type: {pvar}");
                 }
 
                 if (fetchedCount < 10)
