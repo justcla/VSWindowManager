@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace VSWindowManager
 {
-    internal class HideRecentToolWindowCommand
+    internal class HideRecentToolWindowCommands
     {
         /// <summary>
         /// Command IDs.
@@ -24,11 +24,11 @@ namespace VSWindowManager
         private readonly Package package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HideRecentToolWindowCommand"/> class.
+        /// Initializes a new instance of the <see cref="HideRecentToolWindowCommands"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private HideRecentToolWindowCommand(Package package)
+        private HideRecentToolWindowCommands(Package package)
         {
             this.package = package ?? throw new ArgumentNullException("package");
 
@@ -48,7 +48,7 @@ namespace VSWindowManager
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static HideRecentToolWindowCommand Instance
+        public static HideRecentToolWindowCommands Instance
         {
             get;
             private set;
@@ -71,7 +71,7 @@ namespace VSWindowManager
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new HideRecentToolWindowCommand(package);
+            Instance = new HideRecentToolWindowCommands(package);
         }
 
         private void CloseMostRecentToolWindow(object sender, EventArgs e)
