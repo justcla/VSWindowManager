@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -9,9 +8,10 @@ namespace VSWindowManager
     internal class HideRecentToolWindowCommand
     {
         /// <summary>
-        /// Command ID.
+        /// Command IDs.
         /// </summary>
-        public const int CommandId = 0x0110;
+        public const int HideRecentToolWinGroupCmdId = 0x0110;
+        public const int CloseRecentToolWinCmdId = 0x0120;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -34,11 +34,15 @@ namespace VSWindowManager
 
             if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
             {
-                var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
-                commandService.AddCommand(menuItem);
+                commandService.AddCommand(CreateOleMenuCommand(HideRecentToolWinGroupCmdId, HideMostRecentToolWindowGroup));
+                commandService.AddCommand(CreateOleMenuCommand(CloseRecentToolWinCmdId, CloseMostRecentToolWindow));
             }
 
+        }
+
+        private OleMenuCommand CreateOleMenuCommand(int cmdId, EventHandler invokeHandler)
+        {
+            return new OleMenuCommand(invokeHandler, new CommandID(CommandSet, cmdId));
         }
 
         /// <summary>
@@ -70,14 +74,17 @@ namespace VSWindowManager
             Instance = new HideRecentToolWindowCommand(package);
         }
 
-        /// <summary>
-        /// This function is the callback used to execute the command when the menu item is clicked.
-        /// See the constructor to see how the menu item is associated with this function using
-        /// OleMenuCommandService service and MenuCommand class.
-        /// </summary>
-        /// <param name="sender">Event sender.</param>
-        /// <param name="e">Event args.</param>
-        private void MenuItemCallback(object sender, EventArgs e)
+        private void CloseMostRecentToolWindow(object sender, EventArgs e)
+        {
+            CloseOrHideWindow(bCloseWindow: true);
+        }
+
+        private void HideMostRecentToolWindowGroup(object sender, EventArgs e)
+        {
+            CloseOrHideWindow(bCloseWindow: false);
+        }
+
+        private void CloseOrHideWindow(bool bCloseWindow)
         {
             IVsUIShell shell = (IVsUIShell)ServiceProvider.GetService(typeof(IVsUIShell));
             shell.GetToolWindowEnum(out IEnumWindowFrames windowFrames);
@@ -92,17 +99,30 @@ namespace VSWindowManager
                     //System.Diagnostics.Debug.WriteLine($"Caption: {caption} Type: {windowType}");
 
                     // Skip over the Start Page. It's a Tool Window - but not really.
-                    if (((string)caption).Equals("Start Page")) {
+                    if (((string)caption).Equals("Start Page"))
+                    {
                         continue;
                     }
 
                     // Only pay attention to visible windows
                     windowFrame.IsOnScreen(out int bIsOnScreen);
-                    if (bIsOnScreen == 1)
+                    if (bIsOnScreen != 1)
                     {
-                        // Found an active window. AutoHide it.
-                        System.Diagnostics.Debug.WriteLine($"Hiding window: {caption}");
+                        continue;
+                    }
 
+                    // Found an active window.
+                    System.Diagnostics.Debug.WriteLine($"Hiding window: {caption}. Operation: {(bCloseWindow ? "Close" : "Hide Group")}");
+
+                    // Hide Group or Close Window?
+                    if (bCloseWindow)
+                    {
+                        // Perform Close Window operation
+                        windowFrame.Hide();
+                        break;
+                    }
+                    else // Perform Hide Window Group operation
+                    {
                         // HACK! Internal code for setting FrameMode property will set to Docked if already in AutoHide mode.
                         // To avoid this, ensure that the window's current FrameMode is not AutoHide. (Set to Dock if necessary.)
                         windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out var existingAutoHideMode);
@@ -112,9 +132,11 @@ namespace VSWindowManager
                             windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_Dock);
                         }
 
+                        // Hide window (Set to auto-hide)
                         windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE2.VSFM_AutoHide);
                         break;
                     }
+
                 }
 
                 if (fetchedCount < 10)
