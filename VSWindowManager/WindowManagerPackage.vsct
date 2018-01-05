@@ -43,16 +43,22 @@
           <MenuText>Show/Hide Tool Window &amp;Gutters</MenuText>
         </Strings>
       </Button>
-      <Button guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" priority="0x0120" type="Button">
+      <Button guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" priority="0x0100" type="Button">
         <Strings>
           <ButtonText>Hide Most Recent Window Group</ButtonText>
           <MenuText>&amp;Hide Most Recent Window Group</MenuText>
         </Strings>
       </Button>
-      <Button guid="guidWindowManagerPackageCmdSet" id="CloseRecentToolWinCmdId" priority="0x0110" type="Button">
+      <Button guid="guidWindowManagerPackageCmdSet" id="CloseRecentToolWinCmdId" priority="0x0100" type="Button">
         <Strings>
           <ButtonText>Close Most Recent Window</ButtonText>
           <MenuText>&amp;Close Most Recent Tool Window</MenuText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" priority="0x0100" type="Button">
+        <Strings>
+          <ButtonText>Open Most Recently Closed Window</ButtonText>
+          <MenuText>&amp;Open Most Recently Closed Tool Window</MenuText>
         </Strings>
       </Button>
     </Buttons>
@@ -107,6 +113,9 @@
     <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="CloseRecentToolWinCmdId" priority="0x0150">
       <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
     </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" priority="0x0160">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
 
   </CommandPlacements>
 
@@ -115,6 +124,7 @@
     <KeyBinding guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" editor="guidVSStd97" mod1="Shift" key1="VK_INSERT" />
     <!-- Note: Shift+ESC already used by existing Window.Hide (Close) command. User will need to map this or import shortcuts. -->
     <KeyBinding guid="guidWindowManagerPackageCmdSet" id="CloseRecentToolWinCmdId" editor="guidVSStd97" mod1="Shift" key1="VK_ESCAPE" />
+    <KeyBinding guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" editor="guidVSStd97" mod1="Control Shift" key1="T" />
     <!--<KeyBinding guid="guidVSStd97" id="cmdidHideActivePane" editor="guidVSStd97" mod1="Shift" key1="VK_INSERT" />-->
     <KeyBinding guid="guidVSStd97" id="cmdidAutoHideAllWindows" editor="guidVSStd97" mod1="Shift Alt" key1="VK_INSERT" />
     <KeyBinding guid="guidVSStd97" id="cmdidDockingView" editor="guidVSStd97" mod1="Control" key1="VK_INSERT" />
@@ -137,6 +147,7 @@
       <IDSymbol name="ToggleGuttersCmdId" value="0x0100" />
       <IDSymbol name="HideRecentToolWinGroupCmdId" value="0x0110"/>
       <IDSymbol name="CloseRecentToolWinCmdId" value="0x0120"/>
+      <IDSymbol name="OpenRecentlyClosedToolWinCmdId" value="0x0130"/>
     </GuidSymbol>
 
   </Symbols>
