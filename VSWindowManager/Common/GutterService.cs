@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace VSWindowManager
 {
     public class GutterService
     {
+        private const double MARGIN_HIDE_WIDTH = -23;
+
         private Window _window;
 
         public GutterService(Window pWindow)
@@ -18,11 +23,33 @@ namespace VSWindowManager
             // Refresh the side bar list
             List<FrameworkElement> allSideBars = GetAllSideBars();
 
-            // If any gutters are visible, they should all be Collapsed
-            bool visibleGutters = allSideBars.Exists(x => x.Visibility == Visibility.Visible);
+            // If any margins contain a negative margin, then we have hidden some hidden gutters.
+            bool haveHiddenGutters = allSideBars.Exists(x => x.Margin.ToString().Contains("-"));
+            bool showGutters = !haveHiddenGutters;
 
             // Set the visibility of each side bar
-            allSideBars.ForEach(sideBar => sideBar.Visibility = visibleGutters ? Visibility.Collapsed : Visibility.Visible);
+            foreach(FrameworkElement sideBar in allSideBars)
+            {
+                Thickness newMargin = sideBar.Margin;
+                switch (GetDockPosition(sideBar))
+                {
+                    case Dock.Left:
+                        newMargin.Left = (showGutters ? 0 : MARGIN_HIDE_WIDTH);
+                        break;
+                    case Dock.Right:
+                        newMargin.Right = (showGutters ? 0 : MARGIN_HIDE_WIDTH - 4);    // Set Right margin slightly skinnier
+                        break;
+                    case Dock.Top:
+                        newMargin.Top = (showGutters ? 0 : MARGIN_HIDE_WIDTH);
+                        break;
+                    case Dock.Bottom:
+                        newMargin.Bottom = (showGutters ? 0 : MARGIN_HIDE_WIDTH);
+                        break;
+                    default:
+                        break;
+                }
+                sideBar.Margin = newMargin;
+            }
         }
 
         private List<FrameworkElement> GetAllSideBars()
@@ -75,6 +102,21 @@ namespace VSWindowManager
             }
 
             return matches;
+        }
+
+        private static Dock GetDockPosition(FrameworkElement sideBar)
+        {
+            // Use reflection to get the value of ChannelDock from the sideBar (AutoHideChannelControl)
+            // ChannelDock is a DependencyProperty. Must dig into DataContext.
+            object dataContextValue = GetPropertyValue(sideBar, "DataContext");
+            return (Dock)GetPropertyValue(dataContextValue, "Dock");
+        }
+
+        private static object GetPropertyValue(object obj, string propertyName)
+        {
+            Type type = obj.GetType();
+            PropertyInfo propertyInfo = type.GetProperty(propertyName);
+            return propertyInfo.GetValue(obj);
         }
 
     }
