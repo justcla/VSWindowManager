@@ -8,7 +8,6 @@
 
     <Menus>
       <Menu guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" priority="0x1000" type="Context">
-        <!--<Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup"/>-->
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Window Management</ButtonText>
@@ -17,21 +16,13 @@
     </Menus>
 
     <Groups>
-      <!-- Temporary group for viewing Window Mgmt Popup Menu -->
-      <!--<Group guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup" priority="0x0600">
-      </Group>-->
-      
-      <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
-      </Group>
-      
-      <Group guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" priority="0x0600">
-        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu"/>
-      </Group>
-      <Group guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" priority="0x0600">
-        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu"/>
-      </Group>
-
+      <Group guid="guidWindowManagerPackageCmdSet" id="FullScreenGroup" priority="0x0100"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="PopupActionsGroup" priority="0x0100"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0100"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" priority="0x0100"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" priority="0x0100"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersGroup" priority="0x0100"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="ToggleHideWindowsGroup" priority="0x0100"/>
     </Groups>
 
     <Buttons>
@@ -64,19 +55,39 @@
   </Commands>
 
   <CommandPlacements>
-    <!-- Temporarily place the Window Mgmt Popup Menu on the View menu - until we can launch it from the status bar --><!--
-    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" priority="0x0100">
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_VIEW"/>
-    </CommandPlacement>-->
-    
+
+    <!-- Place items on the Window menu -->
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0200">
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersGroup" priority="0x0400">
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
+    </CommandPlacement>
+
     <!-- Place items on the Window Management Pop-up Menu -->
-    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0100">
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="FullScreenGroup" priority="0x0100">
       <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" />
     </CommandPlacement>
     <CommandPlacement guid="guidSHLMainMenu" id="IDG_VS_WINDOW_LAYOUT" priority="0x0200">
       <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" />
     </CommandPlacement>
-    
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" priority="0x0300">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" priority="0x0400">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="PopupActionsGroup" priority="0x0500">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" />
+    </CommandPlacement>
+    <!-- Replace this with Toggle Hide All Windows -->
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleHideWindowsGroup" priority="0x0800">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersGroup" priority="0x9100">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu"/>
+    </CommandPlacement>
+
     <!-- Add items to the Popular Windows group -->
     <!-- Solution Explorer -->
     <CommandPlacement guid="guidVSStd97" id="cmdidProjectExplorer" priority="0x0200">
@@ -94,17 +105,26 @@
     <CommandPlacement guid="guidVSStd97" id="cmdidErrorListWindow" priority="0x0200">
       <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
     </CommandPlacement>
-    
-    <!-- Add items to the Windows Manager group -->
+
+    <!-- Full screen group -->
     <CommandPlacement guid="guidVSStd97" id="cmdidFullScreen" priority="0x0110">
-      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+      <Parent guid="guidWindowManagerPackageCmdSet" id="FullScreenGroup" />
     </CommandPlacement>
-    <CommandPlacement guid="guidVSStd97" id="cmdidAutoHideAllWindows" priority="0x0120">
-      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    <!--<CommandPlacement guid="guidVSStd97" id="cmdidAutoHideAllWindows" priority="0x0120">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="FullScreenGroup" />
+    </CommandPlacement>-->
+
+    <!-- Toggle Hide Windows group-->
+    <CommandPlacement guid="guidVSStd97" id="cmdidAutoHideAllWindows" priority="0x0100">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="ToggleHideWindowsGroup" />
     </CommandPlacement>
-    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersCmdId" priority="0x0130">
-      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+
+    <!-- Pop-up Window Actions Group -->
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" priority="0x0100">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="PopupActionsGroup" />
     </CommandPlacement>
+
+    <!-- Add items to the Windows Manager group -->
     <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" priority="0x0140">
       <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
     </CommandPlacement>
@@ -113,6 +133,11 @@
     </CommandPlacement>
     <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" priority="0x0160">
       <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
+
+    <!-- Toggle Gutters Group -->
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersCmdId" priority="0x0100">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersGroup" />
     </CommandPlacement>
 
   </CommandPlacements>
@@ -141,6 +166,10 @@
       <IDSymbol name="WindowManagementPopupGroup" value="0x1040"/>
       <IDSymbol name="PopularWindowsGroup" value="0x1050"/>
       <IDSymbol name="RecentWindowsGroup" value="0x1060"/>
+      <IDSymbol name="ToggleGuttersGroup" value="0x1070"/>
+      <IDSymbol name="FullScreenGroup" value="0x1080"/>
+      <IDSymbol name="PopupActionsGroup" value="0x1090"/>
+      <IDSymbol name="ToggleHideWindowsGroup" value="0x1100"/>
       <!-- Commands -->
       <IDSymbol name="ToggleGuttersCmdId" value="0x0100" />
       <IDSymbol name="HideRecentToolWinGroupCmdId" value="0x0110"/>

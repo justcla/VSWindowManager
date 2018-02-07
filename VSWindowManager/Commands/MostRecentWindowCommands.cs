@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace VSWindowManager
 {
-    internal class HideRecentToolWindowCommands
+    internal class MostRecentWindowCommands
     {
         // Command Guid and IDs. These match with the symbol values in WindowManagerPackage.vsct
         public static readonly Guid WindowManagerPackageCmdSetGuid = new Guid("04c55c1f-7f7d-482b-bc73-05fed05d9674");
@@ -20,18 +20,18 @@ namespace VSWindowManager
         // Instance and package initialization
         private readonly Package package;
         private IServiceProvider ServiceProvider { get { return this.package; } }
-        public static HideRecentToolWindowCommands Instance { get; private set; }
+        public static MostRecentWindowCommands Instance { get; private set; }
 
         public static void Initialize(Package package)
         {
-            Instance = new HideRecentToolWindowCommands(package);
+            Instance = new MostRecentWindowCommands(package);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HideRecentToolWindowCommands"/> class.
+        /// Initializes a new instance of the <see cref="MostRecentWindowCommands"/> class.
         /// Adds our command handlers for menu commands declared in the VSCT file
         /// </summary>
-        private HideRecentToolWindowCommands(Package package)
+        private MostRecentWindowCommands(Package package)
         {
             this.package = package ?? throw new ArgumentNullException("package");
 

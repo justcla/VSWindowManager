@@ -56,7 +56,7 @@ namespace VSWindowManager
         protected override void Initialize()
         {
             ToggleGuttersCommand.Initialize(this);
-            HideRecentToolWindowCommands.Initialize(this);
+            MostRecentWindowCommands.Initialize(this);
             base.Initialize();
 
             StatusBarButton.Initialize();
