@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -12,6 +13,7 @@ namespace VSWindowManager
         public const int HideRecentToolWinGroupCmdId = 0x0110;
         public const int CloseRecentToolWinCmdId = 0x0120;
         public const int OpenRecentlyClosedToolWinCmdId = 0x0130;
+        public const int ToggleVisibleWindowsCmdId = 0x0140;
 
         // Class constants
         private const int ENUM_LOOP_SIZE = 10;
@@ -19,6 +21,10 @@ namespace VSWindowManager
 
         // Instance and package initialization
         private readonly Package package;
+
+        // List of hidden windows to restore
+        private List<IVsWindowFrame> _restoreWindows;
+
         private IServiceProvider ServiceProvider { get { return this.package; } }
         public static MostRecentWindowCommands Instance { get; private set; }
 
@@ -40,6 +46,7 @@ namespace VSWindowManager
                 commandService.AddCommand(GetCommand(HideRecentToolWinGroupCmdId, QueryStatusHideRecentToolWinGroup, HideMostRecentToolWindowGroup));
                 commandService.AddCommand(GetCommand(CloseRecentToolWinCmdId, QueryStatusCloseRecentToolWin, CloseMostRecentToolWindow));
                 commandService.AddCommand(GetCommand(OpenRecentlyClosedToolWinCmdId, QueryStatusOpenRecentlyClosedToolWin, OpenMostRecentlyClosedToolWin));
+                commandService.AddCommand(GetCommand(ToggleVisibleWindowsCmdId, QueryStatusToggleVisibleWindowsCmdId, ToggleVisibleWindows));
             }
         }
 
@@ -68,11 +75,88 @@ namespace VSWindowManager
             EnableCommandIfTrue(sender, GetMostRecentToolWindow(bFindOpenWindow: false) != null);
         }
 
-        private static void EnableCommandIfTrue(object sender, bool bHasClosedToolWindow)
+        private void QueryStatusToggleVisibleWindowsCmdId(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
             command.Visible = true;
-            command.Enabled = bHasClosedToolWindow;
+            command.Enabled = true;
+            command.Text = ShouldRestoreWindows() ? "&Restore Hidden Windows" : "Hide &All Windows";
+        }
+
+        private bool ShouldRestoreWindows()
+        {
+            return HasRestorableWindows() && !HasVisibleWindows();
+        }
+
+        private bool HasRestorableWindows()
+        {
+            return _restoreWindows != null && _restoreWindows.Count > 0;
+        }
+
+        private bool HasVisibleWindows()
+        {
+            return GetMostRecentToolWindow() != null;
+        }
+
+        private static void EnableCommandIfTrue(object sender, bool bEnable)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Visible = true;
+            command.Enabled = bEnable;
+        }
+
+        private void ToggleVisibleWindows(object sender, EventArgs e)
+        {
+            bool shouldHideWindows = !ShouldRestoreWindows();
+            if (shouldHideWindows)
+            {
+                // Populate the restore windows list - for later restoring
+                _restoreWindows = GetVisibleWindows();
+                // Hide all visible windows
+                _restoreWindows.ForEach(x => x.Hide());
+            }
+            else
+            {
+                // Restore previously hidden windows
+                _restoreWindows.ForEach(x => x.Show());
+                // Clear the hidden windows stack
+                _restoreWindows = null;
+            }
+        }
+
+        private List<IVsWindowFrame> GetVisibleWindows()
+        {
+            IVsUIShell shell = (IVsUIShell)ServiceProvider.GetService(typeof(IVsUIShell));
+            shell.GetToolWindowEnum(out IEnumWindowFrames windowFrames);
+
+            List<IVsWindowFrame> visibleWindows = new List<IVsWindowFrame>();
+
+            // Loop through the enum of tool windows. Must be fetched in groups (ie. 10 at a time)
+            IVsWindowFrame[] windowFrameArray = new IVsWindowFrame[ENUM_LOOP_SIZE];
+            while (windowFrames.Next(ENUM_LOOP_SIZE, windowFrameArray, out var fetchedCount) >= 0)  // TODO Check this.
+            {
+                for (int i = 0; i < fetchedCount; i++)
+                {
+                    // Get all visible windows (not Start Page)
+                    IVsWindowFrame windowFrame = windowFrameArray[i];
+
+                    // Ignore the Start Page. It's a Tool Window - but not really.
+                    if (IsStartPage(windowFrame)) continue;
+                    // Skip if not visible
+                    if (!IsVisibleWindow(windowFrame)) continue;
+
+                    // Found a visible window. Add it to the list.
+                    visibleWindows.Add(windowFrame);
+                }
+
+                // Break if there are no more items in the ENUM
+                if (fetchedCount < ENUM_LOOP_SIZE)
+                {
+                    break;
+                }
+            }
+
+            return visibleWindows;
         }
 
         private void CloseMostRecentToolWindow(object sender, EventArgs e)
