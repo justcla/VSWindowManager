@@ -15,8 +15,9 @@ namespace VSWindowManager
         public static readonly Guid WindowManagerPackageCmdSetGuid = new Guid("04c55c1f-7f7d-482b-bc73-05fed05d9674");
         public const int WindowManagerMenuCmdId = 0x1030;
 
-        public void Initialize()
+        public static void Initialize()
         {
+            // Find the status bar dock panel
             DockPanel statusBarDockPanel = GetStatusBarDockPanel();
             if (statusBarDockPanel == null)
             {
@@ -24,12 +25,15 @@ namespace VSWindowManager
                 return;
             }
 
+            // Create the new status bar button in a new status bar
+            StatusBar windowManagementStatusBar = CreateStatusBar();
+
             // Add the Window Management status bar to the Status Bar dock panel at position 0 (far left)
-            statusBarDockPanel.Children.Insert(0, WindowManagementStatusBar);
+            statusBarDockPanel.Children.Insert(0, windowManagementStatusBar);
 
         }
 
-        private DockPanel GetStatusBarDockPanel()
+        private static DockPanel GetStatusBarDockPanel()
         {
             DependencyObject dd = VisualTreeHelper.GetChild(Application.Current.MainWindow, 0);
             DependencyObject ddd = VisualTreeHelper.GetChild(dd, 0);
@@ -49,20 +53,7 @@ namespace VSWindowManager
             return null;
         }
 
-        private StatusBar _statusBar;
-        private StatusBar WindowManagementStatusBar
-        {
-            get
-            {
-                if (_statusBar == null)
-                {
-                    _statusBar = CreateStatusBar();
-                }
-                return _statusBar;
-            }
-        }
-
-        private StatusBar CreateStatusBar()
+        private static StatusBar CreateStatusBar()
         {
             // Create the status bar button and bind the content and mouse events
             StatusBarItem statusBarItem = new StatusBarItem() { Width = 100 };
@@ -81,7 +72,7 @@ namespace VSWindowManager
             return new TextBlock() { Text = "Window Management", Background = Brushes.Transparent, Foreground = Brushes.White };
         }
 
-        private void ShowContextMenu(object sender, MouseButtonEventArgs mouseButtonEvent)
+        private static void ShowContextMenu(object sender, MouseButtonEventArgs mouseButtonEvent)
         {
             FrameworkElement frameworkElement = (FrameworkElement)sender;
             IVsUIShell uiShell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;

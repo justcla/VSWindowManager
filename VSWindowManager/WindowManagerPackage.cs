@@ -59,7 +59,7 @@ namespace VSWindowManager
             HideRecentToolWindowCommands.Initialize(this);
             base.Initialize();
 
-            new StatusBarButton().Initialize();
+            StatusBarButton.Initialize();
         }
 
         #endregion
