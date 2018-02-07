@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="VSWindowManager.WindowManagerCompartment"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Microsoft.VisualStudio.PlatformUI"
+             xmlns:vsimage="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+             mc:Ignorable="d" 
+             x:Uid="WindowManagerCompartment"
+             x:ClassModifier="internal"
+             d:DesignHeight="300" d:DesignWidth="300"
+             Loaded="WindowManagerCompartment_Loaded"
+             Unloaded="WindowManagerCompartment_Unloaded">
+    
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Uid="BooleanToVisibility" x:Key="BooleanToVisibility" />
+
+        <Style x:Uid="Style_1" TargetType="{x:Type StackPanel}" x:Key="StackPanelHoverStyle">
+            <Setter x:Uid="Setter_1" Property="Background" Value="Transparent" />
+
+            <Style.Triggers>
+                
+                <MultiDataTrigger x:Uid="MultiDataTrigger_1">
+                    <MultiDataTrigger.Conditions>
+                        <Condition x:Uid="Condition_1" Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter x:Uid="Setter_2" Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush x:Uid="SolidColorBrush_1" Color="White" Opacity="0.2" />
+                        </Setter.Value>
+                    </Setter>
+                </MultiDataTrigger>
+               
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.Visibility>
+        <Binding x:Uid="Binding_1" Path="Visible" Converter="{StaticResource BooleanToVisibility}" />
+    </UserControl.Visibility>
+
+    <UserControl.ToolTip>
+        <ToolTip Placement="Top"
+                 x:Uid="ToolTip_1"
+                 Content="{Binding ToolTip}" />
+    </UserControl.ToolTip>
+    
+    <StackPanel x:Uid="SccItemStackPanel"  
+                x:Name="SccItemStackPanel"
+                IsHitTestVisible="True"
+                Orientation="Horizontal"
+                Style="{StaticResource StackPanelHoverStyle}" >
+
+        <vsimage:CrispImage x:Uid="SccItemImage"
+                            x:Name="SccItemImage"
+                            Margin="4,0,6,0"
+                            Moniker="{Binding Icon}" />
+
+    </StackPanel>
+
+</UserControl>
