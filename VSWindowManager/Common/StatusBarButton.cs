@@ -5,6 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -12,6 +13,9 @@ namespace VSWindowManager
 {
     class StatusBarButton
     {
+        private static WindowManagerCompartmentViewModel viewModel;
+        private static WindowManagerCompartment compartment = new WindowManagerCompartment();
+
         public static readonly Guid WindowManagerPackageCmdSetGuid = new Guid("04c55c1f-7f7d-482b-bc73-05fed05d9674");
         public const int WindowManagerMenuCmdId = 0x1030;
 
@@ -56,45 +60,48 @@ namespace VSWindowManager
         private static StatusBar CreateStatusBar()
         {
             // Create the status bar button and bind the content and mouse events
-            StatusBarItem statusBarItem = new StatusBarItem() { Width = 100 };
+            StatusBarItem statusBarItem = new StatusBarItem();
             statusBarItem.Content = GetItemContent();
-            statusBarItem.MouseUp += ShowContextMenu;
 
             // Add the status bar button to a new status bar
-            StatusBar sb = new StatusBar() { Width = 100, Background = Brushes.Transparent };
+            StatusBar sb = new StatusBar() { Background = Brushes.Transparent };
             sb.Items.Add(statusBarItem);
             return sb;
         }
 
         private static object GetItemContent()
         {
-            // TODO: Have this return an image moniker for an icon
-            return new TextBlock() { Text = "Window Management", Background = Brushes.Transparent, Foreground = Brushes.White };
+            viewModel = new WindowManagerCompartmentViewModel();
+            compartment = new WindowManagerCompartment();
+
+            viewModel.Visible = true;
+            viewModel.Icon = KnownMonikers.DockPanel;
+            viewModel.CompartmentClicked += ShowContextMenu;
+            viewModel.ToolTip = "Find your recent toolwindows, layouts, etc. here";
+
+            compartment.Width = 20;
+            compartment.HorizontalAlignment = HorizontalAlignment.Stretch;
+            compartment.VerticalAlignment = VerticalAlignment.Stretch;
+            compartment.DataContext = viewModel;
+
+            return compartment;
         }
 
-        private static void ShowContextMenu(object sender, MouseButtonEventArgs mouseButtonEvent)
+        private static void ShowContextMenu(object sender, WindowManagerCompartmentClickedEventArgs args)
         {
-            FrameworkElement frameworkElement = (FrameworkElement)sender;
+            // Display Window manager menu
             IVsUIShell uiShell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
-
-            Guid cmdSetGuid = WindowManagerPackageCmdSetGuid;
-            POINTS[] points = GetPointsFromMouseEvent(frameworkElement, mouseButtonEvent);
-
-            if (ErrorHandler.Failed(uiShell.ShowContextMenu(0, ref cmdSetGuid, WindowManagerMenuCmdId, points, null)))
+            if (uiShell != null)
             {
-                MessageBox.Show("Failed to show context menu");
+                Rect position = viewModel.Position;
+
+                POINTS[] p = new POINTS[1];
+                p[0] = new POINTS();
+                p[0].x = (short)position.TopLeft.X;
+                p[0].y = (short)position.TopLeft.Y;
+                Guid guidSccDisplayInformationCommandSet = WindowManagerPackageCmdSetGuid;
+                uiShell.ShowContextMenu(0, ref guidSccDisplayInformationCommandSet, WindowManagerMenuCmdId, p, null);
             }
         }
-
-        private static POINTS[] GetPointsFromMouseEvent(FrameworkElement frameworkElement, MouseButtonEventArgs mouseButtonEvent)
-        {
-            Point relativePoint = mouseButtonEvent.GetPosition(frameworkElement);
-            Point screenPoint = frameworkElement.PointToScreen(relativePoint);
-            POINTS point = new POINTS();
-            point.x = (short)screenPoint.X;
-            point.y = (short)screenPoint.Y;
-            return new[] { point };
-        }
-
     }
 }
