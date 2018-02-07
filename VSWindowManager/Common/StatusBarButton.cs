@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -48,29 +49,31 @@ namespace VSWindowManager
             return null;
         }
 
+        private StatusBar _statusBar;
         private StatusBar WindowManagementStatusBar
         {
             get
             {
                 if (_statusBar == null)
                 {
-                    // Create the status bar button and bind the content and mouse events
-                    StatusBarItem statusBarItem = new StatusBarItem() { Width = 100 };
-                    statusBarItem.Content = GetItemContent();
-                    statusBarItem.MouseUp += ShowWindowManagementContextMenu;
-
-                    // Add the status bar button to a new status bar
-                    StatusBar sb = new StatusBar() { Width = 100, Background = Brushes.Transparent };
-                    sb.Items.Add(statusBarItem);
-
-                    _statusBar = sb;
+                    _statusBar = CreateStatusBar();
                 }
-
                 return _statusBar;
             }
         }
 
-        private StatusBar _statusBar;
+        private StatusBar CreateStatusBar()
+        {
+            // Create the status bar button and bind the content and mouse events
+            StatusBarItem statusBarItem = new StatusBarItem() { Width = 100 };
+            statusBarItem.Content = GetItemContent();
+            statusBarItem.MouseUp += ShowContextMenu;
+
+            // Add the status bar button to a new status bar
+            StatusBar sb = new StatusBar() { Width = 100, Background = Brushes.Transparent };
+            sb.Items.Add(statusBarItem);
+            return sb;
+        }
 
         private static object GetItemContent()
         {
@@ -78,23 +81,28 @@ namespace VSWindowManager
             return new TextBlock() { Text = "Window Management", Background = Brushes.Transparent, Foreground = Brushes.White };
         }
 
-        private void ShowWindowManagementContextMenu(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void ShowContextMenu(object sender, MouseButtonEventArgs mouseButtonEvent)
         {
-            IVsUIShell shell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
-            if (shell != null)
-            {
-                POINTS[] p = new POINTS[1];
-                p[0] = new POINTS();
-                p[0].x = 0;
-                p[0].y = 0;
+            FrameworkElement frameworkElement = (FrameworkElement)sender;
+            IVsUIShell uiShell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
 
-                Guid CmdSetGuid = WindowManagerPackageCmdSetGuid;
-                uint cmdId = WindowManagerMenuCmdId;
-                if (ErrorHandler.Failed(shell.ShowContextMenu(0, ref CmdSetGuid, (int)cmdId, p, null)))
-                {
-                    MessageBox.Show("Failed to show context menu");
-                }
+            Guid cmdSetGuid = WindowManagerPackageCmdSetGuid;
+            POINTS[] points = GetPointsFromMouseEvent(frameworkElement, mouseButtonEvent);
+
+            if (ErrorHandler.Failed(uiShell.ShowContextMenu(0, ref cmdSetGuid, WindowManagerMenuCmdId, points, null)))
+            {
+                MessageBox.Show("Failed to show context menu");
             }
+        }
+
+        private static POINTS[] GetPointsFromMouseEvent(FrameworkElement frameworkElement, MouseButtonEventArgs mouseButtonEvent)
+        {
+            Point relativePoint = mouseButtonEvent.GetPosition(frameworkElement);
+            Point screenPoint = frameworkElement.PointToScreen(relativePoint);
+            POINTS point = new POINTS();
+            point.x = (short)screenPoint.X;
+            point.y = (short)screenPoint.Y;
+            return new[] { point };
         }
 
     }
