@@ -1,0 +1,3 @@
+﻿VS Window Manager
+
+07-Feb-2018 v1.0.0  - Initial release
