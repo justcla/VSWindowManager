@@ -7,8 +7,8 @@
   <Commands package="guidWindowManagerPackage">
 
     <Menus>
-      <Menu guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" priority="0x1000" type="Menu">
-        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup"/>
+      <Menu guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" priority="0x1000" type="Context">
+        <!--<Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup"/>-->
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Window Management</ButtonText>
@@ -18,10 +18,8 @@
 
     <Groups>
       <!-- Temporary group for viewing Window Mgmt Popup Menu -->
-      <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup" priority="0x0600">
-        <!-- Temporarily place the Window Mgmt Popup Menu on the View menu - until we can launch it from the status bar -->
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_VIEW"/>
-      </Group>
+      <!--<Group guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup" priority="0x0600">
+      </Group>-->
       
       <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
@@ -38,10 +36,27 @@
 
     <Buttons>
       <Button guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersCmdId" priority="0x0100" type="Button">
-        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
         <Strings>
           <ButtonText>Toggle Gutters</ButtonText>
           <MenuText>Show/Hide Tool Window &amp;Gutters</MenuText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" priority="0x0100" type="Button">
+        <Strings>
+          <ButtonText>Hide Most Recent Window Group</ButtonText>
+          <MenuText>&amp;Hide Most Recent Window Group</MenuText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="CloseRecentToolWinCmdId" priority="0x0100" type="Button">
+        <Strings>
+          <ButtonText>Close Most Recent Window</ButtonText>
+          <MenuText>&amp;Close Most Recent Tool Window</MenuText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" priority="0x0100" type="Button">
+        <Strings>
+          <ButtonText>Open Most Recently Closed Window</ButtonText>
+          <MenuText>&amp;Open Most Recently Closed Tool Window</MenuText>
         </Strings>
       </Button>
     </Buttons>
@@ -67,6 +82,9 @@
     <CommandPlacement guid="guidVSStd97" id="cmdidProjectExplorer" priority="0x0200">
       <Parent guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" />
     </CommandPlacement>
+    <CommandPlacement guid="guidVSStd97" id="cmdidOutputWindow" priority="0x0200">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" />
+    </CommandPlacement>
     <CommandPlacement guid="guidVSStd97" id="cmdidErrorListWindow" priority="0x0200">
       <Parent guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" />
     </CommandPlacement>
@@ -76,9 +94,41 @@
     <CommandPlacement guid="guidVSStd97" id="cmdidErrorListWindow" priority="0x0200">
       <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
     </CommandPlacement>
+    
+    <!-- Add items to the Windows Manager group -->
+    <CommandPlacement guid="guidVSStd97" id="cmdidFullScreen" priority="0x0110">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVSStd97" id="cmdidAutoHideAllWindows" priority="0x0120">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersCmdId" priority="0x0130">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" priority="0x0140">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="CloseRecentToolWinCmdId" priority="0x0150">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" priority="0x0160">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" />
+    </CommandPlacement>
 
   </CommandPlacements>
 
+  <KeyBindings>
+    <KeyBinding guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" editor="guidVSStd97" mod1="Control Shift" key1="VK_F4" />
+    <KeyBinding guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" editor="guidVSStd97" mod1="Shift" key1="VK_INSERT" />
+    <!-- Note: Shift+ESC already used by existing Window.Hide (Close) command. User will need to map this or import shortcuts. -->
+    <KeyBinding guid="guidWindowManagerPackageCmdSet" id="CloseRecentToolWinCmdId" editor="guidVSStd97" mod1="Shift" key1="VK_ESCAPE" />
+    <KeyBinding guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" editor="guidVSStd97" mod1="Control Shift" key1="T" />
+    <!--<KeyBinding guid="guidVSStd97" id="cmdidHideActivePane" editor="guidVSStd97" mod1="Shift" key1="VK_INSERT" />-->
+    <KeyBinding guid="guidVSStd97" id="cmdidAutoHideAllWindows" editor="guidVSStd97" mod1="Shift Alt" key1="VK_INSERT" />
+    <KeyBinding guid="guidVSStd97" id="cmdidDockingView" editor="guidVSStd97" mod1="Control" key1="VK_INSERT" />
+    <KeyBinding guid="guidVSStd97" id="cmdidDockingViewDocument" editor="guidVSStd97" mod1="Control Shift" key1="VK_INSERT" />
+  </KeyBindings>
+    
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidWindowManagerPackage" value="{1cc17f39-7039-467d-a9ad-ede432cb89ea}" />
@@ -93,6 +143,9 @@
       <IDSymbol name="RecentWindowsGroup" value="0x1060"/>
       <!-- Commands -->
       <IDSymbol name="ToggleGuttersCmdId" value="0x0100" />
+      <IDSymbol name="HideRecentToolWinGroupCmdId" value="0x0110"/>
+      <IDSymbol name="CloseRecentToolWinCmdId" value="0x0120"/>
+      <IDSymbol name="OpenRecentlyClosedToolWinCmdId" value="0x0130"/>
     </GuidSymbol>
 
   </Symbols>

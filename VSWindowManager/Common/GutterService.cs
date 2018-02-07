@@ -15,28 +15,35 @@ namespace VSWindowManager
 
         public void ToggleAllSideBars()
         {
-            // Refresh the side bar list
-            List<FrameworkElement> allSideBars = GetAllSideBars();
+            // Fetch an up-to-date list of gutters
+            List<FrameworkElement> allGutters = GetAllTabGutters();
+            if (allGutters == null) return; // There are no tab gutters to toggle.
 
-            // If any gutters are visible, they should all be Collapsed
-            bool visibleGutters = allSideBars.Exists(x => x.Visibility == Visibility.Visible);
+            // To toggle margins, check if any area already hidden.
+            bool haveHiddenGutters = allGutters.Exists(x => x.Visibility == Visibility.Collapsed);
 
-            // Set the visibility of each side bar
-            allSideBars.ForEach(sideBar => sideBar.Visibility = visibleGutters ? Visibility.Collapsed : Visibility.Visible);
+            // Set the visibility of each tab bar
+            Visibility newVisibility = (haveHiddenGutters ? Visibility.Visible : Visibility.Collapsed);
+            allGutters.ForEach(x => x.Visibility = newVisibility);
         }
 
-        private List<FrameworkElement> GetAllSideBars()
+        private List<FrameworkElement> GetAllTabGutters()
         {
-            var sideBarObjects = FindChildrenByType(_window, "AutoHideChannelControl");
-            if (sideBarObjects == null || sideBarObjects.Count == 0) return null;
+            List<DependencyObject> autohideChannelControls = FindChildrenByType(_window, "AutoHideChannelControl");
+            if (autohideChannelControls == null || autohideChannelControls.Count == 0) return null;
 
-            List<FrameworkElement> allSideBars = new List<FrameworkElement>();
-            foreach (DependencyObject sideBarObject in sideBarObjects)
+            // Get the "ItemsPresenter" from the Grid inside the AutoHideChannelControl object
+            List<FrameworkElement> allTabGutters = new List<FrameworkElement>();
+            foreach (DependencyObject autoHideChannelControl in autohideChannelControls)
             {
-                allSideBars.Add((FrameworkElement)sideBarObject);
+                // Note: Not doing null checking here. Expecting all AutoHideChannelControls to have an "ItemsPresenter" inside a (Grid).
+                foreach (DependencyObject grid in FindChildrenByType(autoHideChannelControl, "Grid"))
+                {
+                    allTabGutters.Add((FrameworkElement)((FrameworkElement)grid).FindName("ItemsPresenter"));
+                }
             }
 
-            return allSideBars;
+            return allTabGutters;
         }
 
         private static List<DependencyObject> FindChildrenByType(DependencyObject parent, string typeName)

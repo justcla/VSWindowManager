@@ -1,14 +1,8 @@
 ﻿using System;
-using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
 
 namespace VSWindowManager
 {
@@ -34,6 +28,7 @@ namespace VSWindowManager
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(WindowManagerPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string)]
     public sealed class WindowManagerPackage : Package
     {
         /// <summary>
@@ -61,9 +56,13 @@ namespace VSWindowManager
         protected override void Initialize()
         {
             ToggleGuttersCommand.Initialize(this);
+            HideRecentToolWindowCommands.Initialize(this);
             base.Initialize();
+
+            new StatusBarButton().Initialize();
         }
 
         #endregion
+
     }
 }
