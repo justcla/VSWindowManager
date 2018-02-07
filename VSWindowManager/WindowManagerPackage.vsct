@@ -32,6 +32,15 @@
           <MenuText>Show/Hide Tool Window &amp;Gutters</MenuText>
         </Strings>
       </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="ToggleVisibleWindowsCmdId" priority="0x0100" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Toggle Visible Windows</ButtonText>
+          <MenuText>Hide &amp;All Windows</MenuText>
+        </Strings>
+      </Button>
       <Button guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" priority="0x0100" type="Button">
         <Strings>
           <ButtonText>Hide Most Recent Window Group</ButtonText>
@@ -57,7 +66,10 @@
   <CommandPlacements>
 
     <!-- Place items on the Window menu -->
-    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0200">
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleHideWindowsGroup" priority="0x0210">
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0250">
       <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
     </CommandPlacement>
     <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersGroup" priority="0x0400">
@@ -115,7 +127,7 @@
     </CommandPlacement>-->
 
     <!-- Toggle Hide Windows group-->
-    <CommandPlacement guid="guidVSStd97" id="cmdidAutoHideAllWindows" priority="0x0100">
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleVisibleWindowsCmdId" priority="0x0100">
       <Parent guid="guidWindowManagerPackageCmdSet" id="ToggleHideWindowsGroup" />
     </CommandPlacement>
 
@@ -149,7 +161,7 @@
     <KeyBinding guid="guidWindowManagerPackageCmdSet" id="CloseRecentToolWinCmdId" editor="guidVSStd97" mod1="Shift" key1="VK_ESCAPE" />
     <KeyBinding guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" editor="guidVSStd97" mod1="Control Shift" key1="T" />
     <!--<KeyBinding guid="guidVSStd97" id="cmdidHideActivePane" editor="guidVSStd97" mod1="Shift" key1="VK_INSERT" />-->
-    <KeyBinding guid="guidVSStd97" id="cmdidAutoHideAllWindows" editor="guidVSStd97" mod1="Shift Alt" key1="VK_INSERT" />
+    <KeyBinding guid="guidWindowManagerPackageCmdSet" id="ToggleVisibleWindowsCmdId" editor="guidVSStd97" mod1="Shift Alt" key1="VK_INSERT" />
     <KeyBinding guid="guidVSStd97" id="cmdidDockingView" editor="guidVSStd97" mod1="Control" key1="VK_INSERT" />
     <KeyBinding guid="guidVSStd97" id="cmdidDockingViewDocument" editor="guidVSStd97" mod1="Control Shift" key1="VK_INSERT" />
   </KeyBindings>
@@ -175,6 +187,7 @@
       <IDSymbol name="HideRecentToolWinGroupCmdId" value="0x0110"/>
       <IDSymbol name="CloseRecentToolWinCmdId" value="0x0120"/>
       <IDSymbol name="OpenRecentlyClosedToolWinCmdId" value="0x0130"/>
+      <IDSymbol name="ToggleVisibleWindowsCmdId" value="0x0140"/>
     </GuidSymbol>
 
   </Symbols>
