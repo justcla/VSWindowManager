@@ -7,8 +7,8 @@
   <Commands package="guidWindowManagerPackage">
 
     <Menus>
-      <Menu guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" priority="0x1000" type="Menu">
-        <Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup"/>
+      <Menu guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupMenu" priority="0x1000" type="Context">
+        <!--<Parent guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup"/>-->
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Window Management</ButtonText>
@@ -18,10 +18,8 @@
 
     <Groups>
       <!-- Temporary group for viewing Window Mgmt Popup Menu -->
-      <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup" priority="0x0600">
-        <!-- Temporarily place the Window Mgmt Popup Menu on the View menu - until we can launch it from the status bar -->
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_VIEW"/>
-      </Group>
+      <!--<Group guid="guidWindowManagerPackageCmdSet" id="WindowManagementPopupGroup" priority="0x0600">
+      </Group>-->
       
       <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
