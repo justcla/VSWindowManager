@@ -72,7 +72,7 @@ namespace VSWindowManager
         private void QueryStatusOpenRecentlyClosedToolWin(object sender, EventArgs e)
         {
             // Only enable the command if there is a closed window in the history
-            EnableCommandIfTrue(sender, GetMostRecentToolWindow(bFindOpenWindow: false) != null);
+            EnableCommandIfTrue(sender, GetMostRecentlyClosedWindow() != null);
         }
 
         private void QueryStatusToggleVisibleWindowsCmdId(object sender, EventArgs e)
@@ -195,7 +195,7 @@ namespace VSWindowManager
         /// </summary>
         private void OpenMostRecentlyClosedToolWin(object sender, EventArgs e)
         {
-            IVsWindowFrame windowFrame = GetMostRecentToolWindow(bFindOpenWindow: false);
+            IVsWindowFrame windowFrame = GetMostRecentlyClosedWindow();
             if (windowFrame == null) return;
             
             // Show the window (whether docked or overlayed)
@@ -247,6 +247,51 @@ namespace VSWindowManager
 
             // None found.
             return null;
+        }
+
+        private IVsWindowFrame GetMostRecentlyClosedWindow()
+        {
+            IVsUIShell shell = (IVsUIShell)ServiceProvider.GetService(typeof(IVsUIShell));
+            shell.GetToolWindowEnum(out IEnumWindowFrames windowFrames);
+
+            IVsWindowFrame lastClosedWindow = null;
+            // Loop through the enum of tool windows. Must be fetched in groups (ie. 10 at a time)
+            IVsWindowFrame[] windowFrameArray = new IVsWindowFrame[ENUM_LOOP_SIZE];
+            while (windowFrames.Next(ENUM_LOOP_SIZE, windowFrameArray, out var fetchedCount) >= 0)  // TODO Check this.
+            {
+                for (int i = 0; i < fetchedCount; i++)
+                {
+                    // Look for the first window that is not visible and not the Start Page
+                    IVsWindowFrame windowFrame = windowFrameArray[i];
+                    // Ignore the Start Page. It's a Tool Window - but not really.
+                    if (IsStartPage(windowFrame)) continue;
+
+                    // We are looking for a window that is not visible and not in the AutoHide tray
+                    bool isVisibleWindow = IsVisibleWindow(windowFrame);
+                    bool isAutoHideWindow = IsAutoHideWindow(windowFrame);
+                    if (!isVisibleWindow && !isAutoHideWindow)
+                    {
+                        // Found one. But is it the last closed? Mark it for now, but keep checking.
+                        lastClosedWindow = windowFrame;
+                    }
+                    else
+                    {
+                        if (lastClosedWindow != null)
+                        {
+                            return lastClosedWindow;
+                        }
+                    }
+
+                }
+
+                // Break if there are no more items in the ENUM
+                if (fetchedCount < ENUM_LOOP_SIZE)
+                {
+                    break;
+                }
+            }
+
+            return lastClosedWindow;
         }
 
         private static bool IsVisibleWindow(IVsWindowFrame windowFrame)
