@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -72,7 +73,7 @@ namespace VSWindowManager
         private void QueryStatusOpenRecentlyClosedToolWin(object sender, EventArgs e)
         {
             // Only enable the command if there is a closed window in the history
-            EnableCommandIfTrue(sender, GetMostRecentlyClosedWindow() != null);
+            EnableCommandIfTrue(sender, GetMostRecentToolWindow(bFindOpenWindow: false) != null);
         }
 
         private void QueryStatusToggleVisibleWindowsCmdId(object sender, EventArgs e)
@@ -113,12 +114,18 @@ namespace VSWindowManager
                 // Populate the restore windows list - for later restoring
                 _restoreWindows = GetVisibleWindows();
                 // Hide all visible windows
-                _restoreWindows.ForEach(x => x.Hide());
+                _restoreWindows.ForEach((windowFrame) =>
+                {
+                    HideWindow(windowFrame);
+                });
             }
             else
             {
                 // Restore previously hidden windows
-                _restoreWindows.ForEach(x => x.Show());
+                _restoreWindows.ForEach((windowFrame) =>
+                {
+                    DockWindow(windowFrame);
+                });
                 // Clear the hidden windows stack
                 _restoreWindows = null;
             }
@@ -175,6 +182,11 @@ namespace VSWindowManager
         private void HideMostRecentToolWindowGroup(object sender, EventArgs e)
         {
             IVsWindowFrame windowFrame = GetMostRecentToolWindow(bFindOpenWindow: true);
+            HideWindow(windowFrame);
+        }
+
+        private static void HideWindow(IVsWindowFrame windowFrame)
+        {
             if (windowFrame == null) return;
 
             // HACK! Internal code for setting FrameMode property will set to Docked if already in AutoHide mode.
@@ -190,12 +202,18 @@ namespace VSWindowManager
             windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE2.VSFM_AutoHide);
         }
 
+        private static void DockWindow(IVsWindowFrame windowFrame)
+        {
+            if (windowFrame == null) return;
+            windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_Dock);
+        }
+
         /// <summary>
         /// Open the most recent tool window that is not visible
         /// </summary>
         private void OpenMostRecentlyClosedToolWin(object sender, EventArgs e)
         {
-            IVsWindowFrame windowFrame = GetMostRecentlyClosedWindow();
+            IVsWindowFrame windowFrame = GetMostRecentToolWindow(bFindOpenWindow: false);
             if (windowFrame == null) return;
             
             // Show the window (whether docked or overlayed)
@@ -209,6 +227,8 @@ namespace VSWindowManager
         {
             IVsUIShell shell = (IVsUIShell)ServiceProvider.GetService(typeof(IVsUIShell));
             shell.GetToolWindowEnum(out IEnumWindowFrames windowFrames);
+
+            IVsWindowFrame recentWindow = null;
 
             // Loop through the enum of tool windows. Must be fetched in groups (ie. 10 at a time)
             IVsWindowFrame[] windowFrameArray = new IVsWindowFrame[ENUM_LOOP_SIZE];
@@ -226,16 +246,30 @@ namespace VSWindowManager
                     if (bFindOpenWindow)
                     {
                         // Skip if not visible
-                        if (!IsVisibleWindow(windowFrame)) continue;
+                        if (IsVisibleWindow(windowFrame))
+                        {
+                            return windowFrame;
+                        }
                     }
                     else
                     {
-                        // Skip if Visible or if AutoHide Window
-                        if (IsVisibleWindow(windowFrame) || IsAutoHideWindow(windowFrame)) continue;
+                        // We are looking for a window that is not visible and not in the AutoHide tray
+                        bool isClosed = windowFrame.IsVisible() == VSConstants.S_FALSE;
+                        bool isVisibleWindow = IsVisibleWindow(windowFrame);
+                        bool isAutoHideWindow = IsAutoHideWindow(windowFrame);
+                        if (isClosed)
+                        {
+                            // Found one. But is it the last closed? Mark it for now, but keep checking.
+                            recentWindow = windowFrame;
+                        }
+                        else
+                        {
+                            if (recentWindow != null)
+                            {
+                                return recentWindow;
+                            }
+                        }
                     }
-
-                    // Found one. Return it.
-                    return windowFrame;
                 }
 
                 // Break if there are no more items in the ENUM
@@ -245,8 +279,7 @@ namespace VSWindowManager
                 }
             }
 
-            // None found.
-            return null;
+            return recentWindow;
         }
 
         private IVsWindowFrame GetMostRecentlyClosedWindow()
