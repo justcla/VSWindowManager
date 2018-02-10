@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="VSWindowManager.fd4698d0-cf39-4e72-b968-aa0ff74f2c72" Version="1.0.0" Language="en-US" Publisher="Justin Clareburt" />
+        <Identity Id="VSWindowManager.fd4698d0-cf39-4e72-b968-aa0ff74f2c72" Version="1.0.1" Language="en-US" Publisher="Justin Clareburt" />
         <DisplayName>Window Manager</DisplayName>
         <Description xml:space="preserve">Provides a menu button in the status bar with access to popular tool windows and window layout features.</Description>
         <ReleaseNotes>ReleaseNotes.txt</ReleaseNotes>
