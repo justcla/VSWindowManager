@@ -239,7 +239,6 @@ namespace VSWindowManager
             {
                 for (int i = 0; i < fetchedCount; i++)
                 {
-                    // Look for the first window that is not visible and not the Start Page
                     IVsWindowFrame windowFrame = windowFrameArray[i];
 
                     // Ignore the Start Page. It's a Tool Window - but not really.
@@ -257,10 +256,7 @@ namespace VSWindowManager
                     else
                     {
                         // We are looking for a window that is not visible and not in the AutoHide tray
-                        bool isClosed = windowFrame.IsVisible() == VSConstants.S_FALSE;
-                        bool isVisibleWindow = IsVisibleWindow(windowFrame);
-                        bool isAutoHideWindow = IsAutoHideWindow(windowFrame);
-                        if (isClosed)
+                        if (IsClosedWindow(windowFrame))
                         {
                             // Found one. But is it the last closed? Mark it for now, but keep checking.
                             recentWindow = windowFrame;
@@ -285,49 +281,9 @@ namespace VSWindowManager
             return recentWindow;
         }
 
-        private IVsWindowFrame GetMostRecentlyClosedWindow()
+        private static bool IsClosedWindow(IVsWindowFrame windowFrame)
         {
-            IVsUIShell shell = (IVsUIShell)ServiceProvider.GetService(typeof(IVsUIShell));
-            shell.GetToolWindowEnum(out IEnumWindowFrames windowFrames);
-
-            IVsWindowFrame lastClosedWindow = null;
-            // Loop through the enum of tool windows. Must be fetched in groups (ie. 10 at a time)
-            IVsWindowFrame[] windowFrameArray = new IVsWindowFrame[ENUM_LOOP_SIZE];
-            while (windowFrames.Next(ENUM_LOOP_SIZE, windowFrameArray, out var fetchedCount) >= 0)  // TODO Check this.
-            {
-                for (int i = 0; i < fetchedCount; i++)
-                {
-                    // Look for the first window that is not visible and not the Start Page
-                    IVsWindowFrame windowFrame = windowFrameArray[i];
-                    // Ignore the Start Page. It's a Tool Window - but not really.
-                    if (IsStartPage(windowFrame)) continue;
-
-                    // We are looking for a window that is not visible and not in the AutoHide tray
-                    bool isVisibleWindow = IsVisibleWindow(windowFrame);
-                    bool isAutoHideWindow = IsAutoHideWindow(windowFrame);
-                    if (!isVisibleWindow && !isAutoHideWindow)
-                    {
-                        // Found one. But is it the last closed? Mark it for now, but keep checking.
-                        lastClosedWindow = windowFrame;
-                    }
-                    else
-                    {
-                        if (lastClosedWindow != null)
-                        {
-                            return lastClosedWindow;
-                        }
-                    }
-
-                }
-
-                // Break if there are no more items in the ENUM
-                if (fetchedCount < ENUM_LOOP_SIZE)
-                {
-                    break;
-                }
-            }
-
-            return lastClosedWindow;
+            return windowFrame.IsVisible() == VSConstants.S_FALSE;
         }
 
         private static bool IsVisibleWindow(IVsWindowFrame windowFrame)
