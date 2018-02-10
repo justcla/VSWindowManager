@@ -59,7 +59,81 @@
           <MenuText>&amp;Open Most Recently Closed Tool Window</MenuText>
         </Strings>
       </Button>
-    </Buttons>
+
+      <!-- Recent Tool Windows commands -->
+      <Button guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow1" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Recent Tool Window 1</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow2" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Recent Tool Window 2</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow3" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Recent Tool Window 3</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow4" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Recent Tool Window 4</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow5" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Recent Tool Window 5</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow6" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Recent Tool Window 6</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow7" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Recent Tool Window 7</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow8" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Recent Tool Window 8</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow9" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Recent Tool Window 9</ButtonText>
+        </Strings>
+      </Button>
+</Buttons>
 
   </Commands>
 
@@ -113,8 +187,31 @@
     </CommandPlacement>
 
     <!-- Add items to the Recent Windows group -->
-    <!-- Solution Explorer -->
-    <CommandPlacement guid="guidVSStd97" id="cmdidErrorListWindow" priority="0x0200">
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow1" priority="0x0900">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow2" priority="0x0800">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow3" priority="0x0700">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow4" priority="0x0600">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow5" priority="0x0500">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow6" priority="0x0400">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow7" priority="0x0300">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow8" priority="0x0200">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="RecentToolWindow9" priority="0x0100">
       <Parent guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" />
     </CommandPlacement>
 
@@ -188,6 +285,16 @@
       <IDSymbol name="CloseRecentToolWinCmdId" value="0x0120"/>
       <IDSymbol name="OpenRecentlyClosedToolWinCmdId" value="0x0130"/>
       <IDSymbol name="ToggleVisibleWindowsCmdId" value="0x0140"/>
+      <!-- Psuedo-dynamic commands for Recent Tool Windows 1-9 -->
+      <IDSymbol name="RecentToolWindow1" value="0x0310"/>
+      <IDSymbol name="RecentToolWindow2" value="0x0320"/>
+      <IDSymbol name="RecentToolWindow3" value="0x0330"/>
+      <IDSymbol name="RecentToolWindow4" value="0x0340"/>
+      <IDSymbol name="RecentToolWindow5" value="0x0350"/>
+      <IDSymbol name="RecentToolWindow6" value="0x0360"/>
+      <IDSymbol name="RecentToolWindow7" value="0x0370"/>
+      <IDSymbol name="RecentToolWindow8" value="0x0380"/>
+      <IDSymbol name="RecentToolWindow9" value="0x0390"/>
     </GuidSymbol>
 
   </Symbols>
