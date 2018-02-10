@@ -112,9 +112,12 @@ namespace VSWindowManager
             if (shouldHideWindows)
             {
                 // Populate the restore windows list - for later restoring
-                _restoreWindows = GetVisibleWindows();
-                // Hide all visible windows
-                _restoreWindows.ForEach((windowFrame) =>
+                List<IVsWindowFrame> visibleWindows = GetVisibleWindows();
+                // Only restore windows that are docked (not AutoHide)
+                _restoreWindows = visibleWindows.FindAll(windowFrame => !IsAutoHideWindow(windowFrame));
+
+                // Hide all visible windows (including any visible auto-hide windows)
+                visibleWindows.ForEach((windowFrame) =>
                 {
                     HideWindow(windowFrame);
                 });
