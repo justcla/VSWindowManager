@@ -38,7 +38,6 @@
         <CommandFlag>TextChanges</CommandFlag>
         <Strings>
           <ButtonText>Toggle Visible Windows</ButtonText>
-          <MenuText>Hide &amp;All Windows</MenuText>
         </Strings>
       </Button>
       <Button guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" priority="0x0100" type="Button">
@@ -54,9 +53,11 @@
         </Strings>
       </Button>
       <Button guid="guidWindowManagerPackageCmdSet" id="OpenRecentlyClosedToolWinCmdId" priority="0x0100" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
         <Strings>
-          <ButtonText>Open Most Recently Closed Window</ButtonText>
-          <MenuText>&amp;Open Most Recently Closed Tool Window</MenuText>
+          <ButtonText>Reopen Last Closed Window</ButtonText>
         </Strings>
       </Button>
 

@@ -121,7 +121,13 @@ namespace VSWindowManager
         private void QueryStatusOpenRecentlyClosedToolWin(object sender, EventArgs e)
         {
             // Only enable the command if there is a closed window in the history
-            EnableCommandIfTrue(sender, GetMostRecentToolWindow(bFindOpenWindow: false) != null);
+            //EnableCommandIfTrue(sender, GetMostRecentToolWindow(bFindOpenWindow: false) != null);
+            IVsWindowFrame lastClosedWindow = GetMostRecentToolWindow(bFindOpenWindow: false);
+            bool hasLastClosedWindow = lastClosedWindow != null;
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Visible = hasLastClosedWindow;
+            command.Enabled = hasLastClosedWindow;
+            command.Text = hasLastClosedWindow ? $"&Re-open {GetWindowTitle(lastClosedWindow)}" : "(Disabled)";
         }
 
         private void QueryStatusToggleVisibleWindowsCmdId(object sender, EventArgs e)
@@ -129,7 +135,8 @@ namespace VSWindowManager
             OleMenuCommand command = (OleMenuCommand)sender;
             command.Visible = true;
             command.Enabled = true;
-            command.Text = ShouldRestoreWindows() ? "&Restore Hidden Windows" : "Hide &All Windows";
+            // TODO: Localise for EN-US and other non-traditional EN languages.
+            command.Text = ShouldRestoreWindows() ? "Undo Mi&nimise All Windows" : "Mi&nimise All Windows";
         }
 
         private void QueryStatusRecentToolWindow1(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 1); }
