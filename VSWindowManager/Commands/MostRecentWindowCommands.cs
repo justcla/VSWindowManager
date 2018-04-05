@@ -15,6 +15,15 @@ namespace VSWindowManager
         public const int CloseRecentToolWinCmdId = 0x0120;
         public const int OpenRecentlyClosedToolWinCmdId = 0x0130;
         public const int ToggleVisibleWindowsCmdId = 0x0140;
+        public const int RecentToolWindow1CmdId = 0x0310;
+        public const int RecentToolWindow2CmdId = 0x0320;
+        public const int RecentToolWindow3CmdId = 0x0330;
+        public const int RecentToolWindow4CmdId = 0x0340;
+        public const int RecentToolWindow5CmdId = 0x0350;
+        public const int RecentToolWindow6CmdId = 0x0360;
+        public const int RecentToolWindow7CmdId = 0x0370;
+        public const int RecentToolWindow8CmdId = 0x0380;
+        public const int RecentToolWindow9CmdId = 0x0390;
 
         // Class constants
         private const int ENUM_LOOP_SIZE = 10;
@@ -25,6 +34,7 @@ namespace VSWindowManager
 
         // List of hidden windows to restore
         private List<IVsWindowFrame> _restoreWindows;
+        private List<IVsWindowFrame> _otherRecentWindows;
 
         private IServiceProvider ServiceProvider { get { return this.package; } }
         public static MostRecentWindowCommands Instance { get; private set; }
@@ -32,6 +42,19 @@ namespace VSWindowManager
         public static void Initialize(Package package)
         {
             Instance = new MostRecentWindowCommands(package);
+        }
+
+        internal void PopulateOtherRecentWindowsList()
+        {
+            List<IVsWindowFrame> allToolWindows = GetAllToolWindows();
+            _otherRecentWindows = allToolWindows.FindAll((windowFrame) => !IsPopularWindow(windowFrame));
+        }
+
+        private bool IsPopularWindow(IVsWindowFrame windowFrame)
+        {
+            // TODO: Compare window GUIDs, instead of titles
+            List<string> popularWindows = new List<string>() { "Solution Explorer", "Error List", "Output" };
+            return popularWindows.Contains(GetWindowTitle(windowFrame));
         }
 
         /// <summary>
@@ -48,7 +71,32 @@ namespace VSWindowManager
                 commandService.AddCommand(GetCommand(CloseRecentToolWinCmdId, QueryStatusCloseRecentToolWin, CloseMostRecentToolWindow));
                 commandService.AddCommand(GetCommand(OpenRecentlyClosedToolWinCmdId, QueryStatusOpenRecentlyClosedToolWin, OpenMostRecentlyClosedToolWin));
                 commandService.AddCommand(GetCommand(ToggleVisibleWindowsCmdId, QueryStatusToggleVisibleWindowsCmdId, ToggleVisibleWindows));
+                // Add commands for the recent windows
+                commandService.AddCommand(GetCommand(RecentToolWindow1CmdId, QueryStatusRecentToolWindow1, OpenRecentToolWindow1));
+                commandService.AddCommand(GetCommand(RecentToolWindow2CmdId, QueryStatusRecentToolWindow2, OpenRecentToolWindow2));
+                commandService.AddCommand(GetCommand(RecentToolWindow3CmdId, QueryStatusRecentToolWindow3, OpenRecentToolWindow3));
+                commandService.AddCommand(GetCommand(RecentToolWindow4CmdId, QueryStatusRecentToolWindow4, OpenRecentToolWindow4));
+                commandService.AddCommand(GetCommand(RecentToolWindow5CmdId, QueryStatusRecentToolWindow5, OpenRecentToolWindow5));
+                commandService.AddCommand(GetCommand(RecentToolWindow6CmdId, QueryStatusRecentToolWindow6, OpenRecentToolWindow6));
+                commandService.AddCommand(GetCommand(RecentToolWindow7CmdId, QueryStatusRecentToolWindow7, OpenRecentToolWindow7));
+                commandService.AddCommand(GetCommand(RecentToolWindow8CmdId, QueryStatusRecentToolWindow8, OpenRecentToolWindow8));
+                commandService.AddCommand(GetCommand(RecentToolWindow9CmdId, QueryStatusRecentToolWindow9, OpenRecentToolWindow9));
             }
+        }
+
+        private void OpenRecentToolWindow1(object sender, EventArgs e) { OpenRecentToolWindow(1); }
+        private void OpenRecentToolWindow2(object sender, EventArgs e) { OpenRecentToolWindow(2); }
+        private void OpenRecentToolWindow3(object sender, EventArgs e) { OpenRecentToolWindow(3); }
+        private void OpenRecentToolWindow4(object sender, EventArgs e) { OpenRecentToolWindow(4); }
+        private void OpenRecentToolWindow5(object sender, EventArgs e) { OpenRecentToolWindow(5); }
+        private void OpenRecentToolWindow6(object sender, EventArgs e) { OpenRecentToolWindow(6); }
+        private void OpenRecentToolWindow7(object sender, EventArgs e) { OpenRecentToolWindow(7); }
+        private void OpenRecentToolWindow8(object sender, EventArgs e) { OpenRecentToolWindow(8); }
+        private void OpenRecentToolWindow9(object sender, EventArgs e) { OpenRecentToolWindow(9); }
+
+        private void OpenRecentToolWindow(int num)
+        {
+            _otherRecentWindows[num-1].Show();
         }
 
         private OleMenuCommand GetCommand(int cmdId, EventHandler queryStatusHandler, EventHandler invokeHandler)
@@ -73,7 +121,13 @@ namespace VSWindowManager
         private void QueryStatusOpenRecentlyClosedToolWin(object sender, EventArgs e)
         {
             // Only enable the command if there is a closed window in the history
-            EnableCommandIfTrue(sender, GetMostRecentToolWindow(bFindOpenWindow: false) != null);
+            //EnableCommandIfTrue(sender, GetMostRecentToolWindow(bFindOpenWindow: false) != null);
+            IVsWindowFrame lastClosedWindow = GetMostRecentToolWindow(bFindOpenWindow: false);
+            bool hasLastClosedWindow = lastClosedWindow != null;
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Visible = hasLastClosedWindow;
+            command.Enabled = hasLastClosedWindow;
+            command.Text = hasLastClosedWindow ? $"&Re-open {GetWindowTitle(lastClosedWindow)}" : "(Disabled)";
         }
 
         private void QueryStatusToggleVisibleWindowsCmdId(object sender, EventArgs e)
@@ -81,7 +135,39 @@ namespace VSWindowManager
             OleMenuCommand command = (OleMenuCommand)sender;
             command.Visible = true;
             command.Enabled = true;
-            command.Text = ShouldRestoreWindows() ? "&Restore Hidden Windows" : "Hide &All Windows";
+            // TODO: Localise for EN-US and other non-traditional EN languages.
+            command.Text = ShouldRestoreWindows() ? "Undo Mi&nimise All Windows" : "Mi&nimise All Windows";
+        }
+
+        private void QueryStatusRecentToolWindow1(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 1); }
+        private void QueryStatusRecentToolWindow2(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 2); }
+        private void QueryStatusRecentToolWindow3(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 3); }
+        private void QueryStatusRecentToolWindow4(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 4); }
+        private void QueryStatusRecentToolWindow5(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 5); }
+        private void QueryStatusRecentToolWindow6(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 6); }
+        private void QueryStatusRecentToolWindow7(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 7); }
+        private void QueryStatusRecentToolWindow8(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 8); }
+        private void QueryStatusRecentToolWindow9(object sender, EventArgs e) { QueryStatusRecentToolWindow(sender, 9); }
+
+        private void QueryStatusRecentToolWindow(object sender, int num)
+        {
+            bool bEnable = HasOtherRecentWindow(num);
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Visible = bEnable;
+            command.Enabled = bEnable;
+            command.Text = GetTextForRecentWindowCommand(num, bEnable);
+        }
+
+        private string GetTextForRecentWindowCommand(int num, bool bEnabled)
+        {
+            string titleText = bEnabled ? GetWindowTitle(_otherRecentWindows[num - 1]) : "(Disabled)";
+            return $"&{num}: {titleText}";
+        }
+
+        private bool HasOtherRecentWindow(int num)
+        {
+            // Assume the OtherRecentWindows list will be populated when the context menu is opened. See StatusBarButton.ShowContextMenu
+            return _otherRecentWindows.Count >= num;
         }
 
         private bool ShouldRestoreWindows()
@@ -279,6 +365,35 @@ namespace VSWindowManager
             }
 
             return recentWindow;
+        }
+
+        private List<IVsWindowFrame> GetAllToolWindows()
+        {
+
+            IVsUIShell shell = (IVsUIShell)ServiceProvider.GetService(typeof(IVsUIShell));
+            shell.GetToolWindowEnum(out IEnumWindowFrames windowFrames);
+
+            // Loop through the enum of tool windows. Must be fetched in groups (ie. 10 at a time)
+            List<IVsWindowFrame> toolWindows = new List<IVsWindowFrame>();
+            IVsWindowFrame[] windowFrameArray = new IVsWindowFrame[ENUM_LOOP_SIZE];
+            while (windowFrames.Next(ENUM_LOOP_SIZE, windowFrameArray, out var fetchedCount) >= 0)  // TODO Check this.
+            {
+                for (int i = 0; i < fetchedCount; i++)
+                {
+                    IVsWindowFrame windowFrame = windowFrameArray[i];
+                    // Ignore the Start Page. It's a Tool Window - but not really.
+                    if (IsStartPage(windowFrame)) continue;
+                    toolWindows.Add(windowFrame);
+                }
+
+                // Break if there are no more items in the ENUM
+                if (fetchedCount < ENUM_LOOP_SIZE)
+                {
+                    break;
+                }
+            }
+
+            return toolWindows;
         }
 
         private static bool IsClosedWindow(IVsWindowFrame windowFrame)

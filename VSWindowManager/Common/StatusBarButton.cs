@@ -2,9 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -89,6 +87,9 @@ namespace VSWindowManager
 
         private static void ShowContextMenu(object sender, WindowManagerCompartmentClickedEventArgs args)
         {
+            // Initialize(refresh) the OtherRecentWindows list here so that it doesn't have to be built repeatedly during each QueryStatus
+            MostRecentWindowCommands.Instance.PopulateOtherRecentWindowsList();
+
             // Display Window manager menu
             IVsUIShell uiShell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
             if (uiShell != null)
