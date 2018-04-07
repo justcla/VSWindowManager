@@ -57,6 +57,7 @@ namespace VSWindowManager
         {
             ToggleGuttersCommand.Initialize(this);
             MostRecentWindowCommands.Initialize(this);
+            ShowWindowToolsCommand.Initialize(this);
             base.Initialize();
 
             StatusBarButton.Initialize();
