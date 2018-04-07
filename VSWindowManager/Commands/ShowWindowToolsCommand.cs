@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using System.Windows;
 
 namespace VSWindowManager
 {
@@ -81,7 +80,7 @@ namespace VSWindowManager
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            MessageBox.Show("Show Window Tools");
+            StatusBarButton.LaunchWindowToolsContextMenu();
         }
     }
 }

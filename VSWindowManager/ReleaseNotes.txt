@@ -1,4 +1,5 @@
 ﻿VS Window Manager
 
-07-Feb-2018 v1.0.0  - Initial release
+06-Apr-2018 v1.2.0  - Launch status bar context menu with shortcut: Ctrl+\,W
 04-Apr-2018 v1.1.1  - Includes dynamic recent windows list.
+07-Feb-2018 v1.0.0  - Initial release
