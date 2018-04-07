@@ -16,16 +16,26 @@
     </Menus>
 
     <Groups>
-      <Group guid="guidWindowManagerPackageCmdSet" id="FullScreenGroup" priority="0x0100"/>
-      <Group guid="guidWindowManagerPackageCmdSet" id="PopupActionsGroup" priority="0x0100"/>
-      <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup" priority="0x0100"/>
-      <Group guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup" priority="0x0100"/>
-      <Group guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup" priority="0x0100"/>
-      <Group guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersGroup" priority="0x0100"/>
-      <Group guid="guidWindowManagerPackageCmdSet" id="ToggleHideWindowsGroup" priority="0x0100"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="FullScreenGroup"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="PopupActionsGroup"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="WindowManagerGroup"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="PopularWindowsGroup"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="RecentWindowsGroup"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersGroup"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="ToggleHideWindowsGroup"/>
+      <Group guid="guidWindowManagerPackageCmdSet" id="LaunchWindowToolsGroup"/>
     </Groups>
 
     <Buttons>
+      <!-- Show the Window Tools command -->
+      <Button guid="guidWindowManagerPackageCmdSet" id="ShowWindowToolsCmdId" type="Button">
+        <Strings>
+          <ButtonText>Show Window Management Tools</ButtonText>
+          <MenuText>Show Window Management &amp;Tools</MenuText>
+        </Strings>
+      </Button>
+      
+      <!-- Window control commands -->
       <Button guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersCmdId" priority="0x0100" type="Button">
         <Strings>
           <ButtonText>Toggle Gutters</ButtonText>
@@ -150,6 +160,14 @@
     <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ToggleGuttersGroup" priority="0x0400">
       <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
     </CommandPlacement>
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="LaunchWindowToolsGroup" priority="0x0450">
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_WINDOW"/>
+    </CommandPlacement>
+
+    <!-- Launch Window Tools group-->
+    <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="ShowWindowToolsCmdId" priority="0x0100">
+      <Parent guid="guidWindowManagerPackageCmdSet" id="LaunchWindowToolsGroup"/>
+    </CommandPlacement>
 
     <!-- Place items on the Window Management Pop-up Menu -->
     <CommandPlacement guid="guidWindowManagerPackageCmdSet" id="FullScreenGroup" priority="0x0100">
@@ -253,6 +271,9 @@
   </CommandPlacements>
 
   <KeyBindings>
+    <!-- VK_OEM_5 = "\|" key -->
+    <KeyBinding guid="guidWindowManagerPackageCmdSet" id="ShowWindowToolsCmdId" editor="guidVSStd97" mod1="Control" key1="VK_OEM_5" mod2="Control" key2="W" />
+    <KeyBinding guid="guidWindowManagerPackageCmdSet" id="ShowWindowToolsCmdId" editor="guidVSStd97" mod1="Control" key1="VK_OEM_5" key2="W" />
     <KeyBinding guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" editor="guidVSStd97" mod1="Control Shift" key1="VK_F4" />
     <KeyBinding guid="guidWindowManagerPackageCmdSet" id="HideRecentToolWinGroupCmdId" editor="guidVSStd97" mod1="Shift" key1="VK_INSERT" />
     <!-- Note: Shift+ESC already used by existing Window.Hide (Close) command. User will need to map this or import shortcuts. -->
@@ -280,12 +301,14 @@
       <IDSymbol name="FullScreenGroup" value="0x1080"/>
       <IDSymbol name="PopupActionsGroup" value="0x1090"/>
       <IDSymbol name="ToggleHideWindowsGroup" value="0x1100"/>
+      <IDSymbol name="LaunchWindowToolsGroup" value="0x1110"/>
       <!-- Commands -->
       <IDSymbol name="ToggleGuttersCmdId" value="0x0100" />
       <IDSymbol name="HideRecentToolWinGroupCmdId" value="0x0110"/>
       <IDSymbol name="CloseRecentToolWinCmdId" value="0x0120"/>
       <IDSymbol name="OpenRecentlyClosedToolWinCmdId" value="0x0130"/>
       <IDSymbol name="ToggleVisibleWindowsCmdId" value="0x0140"/>
+      <IDSymbol name="ShowWindowToolsCmdId" value="0x0150"/>
       <!-- Psuedo-dynamic commands for Recent Tool Windows 1-9 -->
       <IDSymbol name="RecentToolWindow1" value="0x0310"/>
       <IDSymbol name="RecentToolWindow2" value="0x0320"/>

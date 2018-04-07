@@ -87,6 +87,11 @@ namespace VSWindowManager
 
         private static void ShowContextMenu(object sender, WindowManagerCompartmentClickedEventArgs args)
         {
+            LaunchWindowToolsContextMenu();
+        }
+
+        public static void LaunchWindowToolsContextMenu()
+        {
             // Initialize(refresh) the OtherRecentWindows list here so that it doesn't have to be built repeatedly during each QueryStatus
             MostRecentWindowCommands.Instance.PopulateOtherRecentWindowsList();
 
