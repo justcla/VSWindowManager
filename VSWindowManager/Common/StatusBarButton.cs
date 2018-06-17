@@ -75,7 +75,8 @@ namespace VSWindowManager
             viewModel.Visible = true;
             viewModel.Icon = KnownMonikers.DockPanel;
             viewModel.CompartmentClicked += ShowContextMenu;
-            viewModel.ToolTip = "Find your recent toolwindows, layouts, etc. here";
+            string shortcutKeys = GetWindowToolsShortcut();
+            viewModel.ToolTip = @"Tool Windows" + shortcutKeys;
 
             compartment.Width = 20;
             compartment.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -83,6 +84,12 @@ namespace VSWindowManager
             compartment.DataContext = viewModel;
 
             return compartment;
+        }
+
+        private static string GetWindowToolsShortcut()
+        {
+            // TODO: Find current shortcut for Window.ShowWindowManagementTools
+            return @"  (Ctrl+\, Ctrl+W)";
         }
 
         private static void ShowContextMenu(object sender, WindowManagerCompartmentClickedEventArgs args)
