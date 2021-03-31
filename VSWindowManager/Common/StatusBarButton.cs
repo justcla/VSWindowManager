@@ -37,12 +37,11 @@ namespace VSWindowManager
 
         private static DockPanel GetStatusBarDockPanel()
         {
-            DependencyObject dd = VisualTreeHelper.GetChild(Application.Current.MainWindow, 0);
-            DependencyObject ddd = VisualTreeHelper.GetChild(dd, 0);
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(ddd); i++)
+            // Code fix contributed by Zhang Chen (GitHub user: zc910704)
+            DependencyObject rootGrid = VisualTreeHelper.GetChild(Application.Current.MainWindow, 0);
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(rootGrid); i++)
             {
-                object o = VisualTreeHelper.GetChild(ddd, i);
+                object o = VisualTreeHelper.GetChild(rootGrid, i);
                 if (o != null && o is DockPanel)
                 {
                     DockPanel dockPanel = o as DockPanel;
