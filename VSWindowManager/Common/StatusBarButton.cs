@@ -38,18 +38,24 @@ namespace VSWindowManager
         private static DockPanel GetStatusBarDockPanel()
         {
             // Code fix contributed by Zhang Chen (GitHub user: zc910704)
-            DependencyObject rootGrid = VisualTreeHelper.GetChild(Application.Current.MainWindow, 0);
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(rootGrid); i++)
+            try
             {
-                object o = VisualTreeHelper.GetChild(rootGrid, i);
-                if (o != null && o is DockPanel)
+                DependencyObject rootGrid = VisualTreeHelper.GetChild(Application.Current.MainWindow, 0);
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(rootGrid); i++)
                 {
-                    DockPanel dockPanel = o as DockPanel;
-                    if (dockPanel.Name == "StatusBarPanel")
+                    object o = VisualTreeHelper.GetChild(rootGrid, i);
+                    if (o != null && o is DockPanel)
                     {
-                        return dockPanel;
+                        DockPanel dockPanel = o as DockPanel;
+                        if (dockPanel.Name == "StatusBarPanel")
+                        {
+                            return dockPanel;
+                        }
                     }
                 }
+            } catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Exception occurred while attempting to locate status bar.", e);
             }
             return null;
         }
