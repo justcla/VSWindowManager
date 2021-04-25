@@ -24,8 +24,6 @@ namespace VSWindowManager
         {
             await base.InitializeAsync(cancellationToken, progress);
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-
-            MessageBox.Show("Initializing Window Manager");
             
             ToggleGuttersCommand.Initialize(this);
             MostRecentWindowCommands.Initialize(this);
