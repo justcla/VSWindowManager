@@ -1,4 +1,5 @@
 ﻿VS Window Manager - by Justin Clareburt
+19-Mar-2023 v1.5.0  - Created separate release (and branch) to support VS2017 and VS2019
 26-Apr-2021 v1.4.2  - Work-around applied for initialization issue.
 11-Apr-2021 v1.4.1  - Fix auto-load issue finding status bar when shell not loaded.
 31-Mar-2021 v1.4.0  - Upgraded for VS2019. (Also back-compat for VS2017
