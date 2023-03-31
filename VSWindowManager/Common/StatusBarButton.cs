@@ -13,11 +13,25 @@ namespace VSWindowManager
     {
         private static WindowManagerCompartmentViewModel viewModel;
         private static WindowManagerCompartment compartment = new WindowManagerCompartment();
+        private static StatusBar windowManagementStatusBar;
+        private static bool addedStatusBarIcon = false;
 
         public static readonly Guid WindowManagerPackageCmdSetGuid = new Guid("04c55c1f-7f7d-482b-bc73-05fed05d9674");
         public const int WindowManagerMenuCmdId = 0x1030;
 
         public static void Initialize()
+        {
+            InitializeStatusBar();
+
+        }
+
+        private static void InitializeStatusBar()
+        {
+            // Add the Window Management status bar to the Status Bar
+            AddWindowManagementStatusBar();
+        }
+
+        private static void AddWindowManagementStatusBar()
         {
             // Find the status bar dock panel
             DockPanel statusBarDockPanel = GetStatusBarDockPanel();
@@ -28,11 +42,14 @@ namespace VSWindowManager
             }
 
             // Create the new status bar button in a new status bar
-            StatusBar windowManagementStatusBar = CreateStatusBar();
+            if (windowManagementStatusBar == null)
+            {
+                windowManagementStatusBar = CreateStatusBar();
+            }
 
             // Add the Window Management status bar to the Status Bar dock panel at position 0 (far left)
             statusBarDockPanel.Children.Insert(0, windowManagementStatusBar);
-
+            addedStatusBarIcon = true;
         }
 
         private static DockPanel GetStatusBarDockPanel()
@@ -41,9 +58,11 @@ namespace VSWindowManager
             try
             {
                 DependencyObject rootGrid = VisualTreeHelper.GetChild(Application.Current.MainWindow, 0);
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(rootGrid); i++)
+                DependencyObject mainChild = VisualTreeHelper.GetChild(rootGrid, 0);
+                DependencyObject primaryObj = VisualTreeHelper.GetChild(mainChild, 0);
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(primaryObj); i++)
                 {
-                    object o = VisualTreeHelper.GetChild(rootGrid, i);
+                    DependencyObject o = VisualTreeHelper.GetChild(primaryObj, i);
                     if (o != null && o is DockPanel)
                     {
                         DockPanel dockPanel = o as DockPanel;
@@ -108,6 +127,10 @@ namespace VSWindowManager
             MostRecentWindowCommands.Instance.PopulateOtherRecentWindowsList();
 
             // Display Window manager menu
+            if (!addedStatusBarIcon)
+            {
+                AddWindowManagementStatusBar();
+            }
             IVsUIShell uiShell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
             if (uiShell != null)
             {

@@ -1,7 +1,9 @@
-﻿VS Window Manager - by Justin Clareburt
+﻿How Windows - by Justin Clareburt
+20-Mar-2023 v2.0.0  - Upgraded for VS2022.
+19-Mar-2023 v1.5.0  - Created separate release (and branch) to support VS2017 and VS2019
 26-Apr-2021 v1.4.2  - Work-around applied for initialization issue.
 11-Apr-2021 v1.4.1  - Fix auto-load issue finding status bar when shell not loaded.
-31-Mar-2021 v1.4.0  - Upgraded for VS2019. (Also back-compat for VS2017
+31-Mar-2021 v1.4.0  - Upgraded for VS2019. (Also back-compat for VS2017)
 31-Mar-2021 v1.3.1  - Fix for GetStatusBarDockPanel. Contributed by Zhang Chen (GitHub user: zc910704)
 17-Jun-2018 v1.3.0  - Inlcudes keyboard mapping definitions file.
 06-Apr-2018 v1.2.0  - Launch status bar context menu with shortcut: Ctrl+\,W

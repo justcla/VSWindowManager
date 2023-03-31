@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="HotWindows.fd4698d0-cf39-4e72-b968-aa0ff74f2c72" Version="1.4.2" Language="en-US" Publisher="Justin Clareburt" />
+        <Identity Id="HotWindows.fd4698d0-cf39-4e72-b968-aa0ff74f2c72" Version="3.0.0" Language="en-US" Publisher="Justin Clareburt" />
         <DisplayName>Hot Windows</DisplayName>
         <Description xml:space="preserve">Provides a menu button in the status bar with access to popular tool windows and window layout features.</Description>
         <MoreInfo>https://marketplace.visualstudio.com/items?itemName=JustinClareburtMSFT.HotWindows</MoreInfo>
-        <ReleaseNotes>ReleaseNotes.txt</ReleaseNotes>
+        <GettingStartedGuide>https://github.com/justcla/VSWindowManager</GettingStartedGuide>
+        <ReleaseNotes>https://github.com/justcla/VSWindowManager/blob/master/VSWindowManager/ReleaseNotes.txt</ReleaseNotes>
         <Icon>Resources\HotWindows_Icon128x.png</Icon>
     </Metadata>
     <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,)" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
     </Installation>
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
